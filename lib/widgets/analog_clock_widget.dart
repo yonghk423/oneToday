@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class AnalogClockWidget extends StatelessWidget {
   final Duration remainingTime;
@@ -13,33 +14,50 @@ class AnalogClockWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 오늘 자정까지의 전체 시간 (24시간)
-    final totalHoursInDay = 24;
-    
-    // 남은 시간을 시간 단위로 변환 (0.0 ~ 24.0)
-    final remainingHours = remainingTime.inHours + (remainingTime.inMinutes / 60.0);
-    
-    // 시계 바늘 각도 계산 (12시 방향이 0도, 시계 방향)
-    // 남은 시간이 적을수록 바늘이 아래쪽(6시 방향)으로 이동
-    final angle = (remainingHours / totalHoursInDay) * 2 * math.pi;
-    // 12시 방향이 0도이므로 -90도 회전
-    final adjustedAngle = angle - (math.pi / 2);
+    // 남은 시간 계산
+    final hours = remainingTime.inHours;
+    final minutes = remainingTime.inMinutes % 60;
+
+    // 시침 각도: 시간을 12시간 형식으로 변환 (0-12시)
+    final hour12 = hours % 12;
+    final hourAngle =
+        (hour12 * 30 + minutes * 0.5) * math.pi / 180; // 시침은 분에 따라 조금씩 이동
+    final hourAdjustedAngle = hourAngle - (math.pi / 2); // 12시 방향이 0도
+
+    // 분침 각도: 분을 60분 형식으로 변환
+    final minuteAngle = (minutes * 6) * math.pi / 180; // 1분 = 6도
+    final minuteAdjustedAngle = minuteAngle - (math.pi / 2); // 12시 방향이 0도
 
     return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _ClockPainter(adjustedAngle, remainingHours),
-      ),
-    );
+          width: size,
+          height: size,
+          child: CustomPaint(
+            painter: _ClockPainter(
+              hourAdjustedAngle,
+              minuteAdjustedAngle,
+              hours,
+              minutes,
+            ),
+          ),
+        )
+        .animate()
+        .fadeIn(duration: 600.ms)
+        .scale(
+          delay: 200.ms,
+          duration: 500.ms,
+          begin: const Offset(0.8, 0.8),
+          end: const Offset(1.0, 1.0),
+        );
   }
 }
 
 class _ClockPainter extends CustomPainter {
-  final double angle;
-  final double remainingHours;
+  final double hourAngle;
+  final double minuteAngle;
+  final int hours;
+  final int minutes;
 
-  _ClockPainter(this.angle, this.remainingHours);
+  _ClockPainter(this.hourAngle, this.minuteAngle, this.hours, this.minutes);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -108,18 +126,35 @@ class _ClockPainter extends CustomPainter {
       );
     }
 
-    // 시계 바늘 그리기
-    final handLength = radius * 0.7;
-    final handEndX = center.dx + handLength * math.cos(angle);
-    final handEndY = center.dy + handLength * math.sin(angle);
+    // 시침 그리기 (짧고 두꺼운 바늘, 더 진한 색상)
+    final hourHandLength = radius * 0.5;
+    final hourHandEndX = center.dx + hourHandLength * math.cos(hourAngle);
+    final hourHandEndY = center.dy + hourHandLength * math.sin(hourAngle);
 
-    final handPaint = Paint()
-      ..color = Colors.blue.shade700
+    final hourHandPaint = Paint()
+      ..color = Colors.blue.shade900
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
+      ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawLine(center, Offset(handEndX, handEndY), handPaint);
+    canvas.drawLine(center, Offset(hourHandEndX, hourHandEndY), hourHandPaint);
+
+    // 분침 그리기 (길고 얇은 바늘)
+    final minuteHandLength = radius * 0.7;
+    final minuteHandEndX = center.dx + minuteHandLength * math.cos(minuteAngle);
+    final minuteHandEndY = center.dy + minuteHandLength * math.sin(minuteAngle);
+
+    final minuteHandPaint = Paint()
+      ..color = Colors.blue.shade700
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      center,
+      Offset(minuteHandEndX, minuteHandEndY),
+      minuteHandPaint,
+    );
 
     // 중심점
     final centerPaint = Paint()
@@ -129,8 +164,6 @@ class _ClockPainter extends CustomPainter {
     canvas.drawCircle(center, 6, centerPaint);
 
     // 남은 시간 텍스트 표시
-    final hours = remainingHours.toInt();
-    final minutes = ((remainingHours - hours) * 60).toInt();
     final timeText = hours > 0 ? '$hours시간 ${minutes}분' : '$minutes분';
 
     final timeTextPainter = TextPainter(
@@ -148,16 +181,15 @@ class _ClockPainter extends CustomPainter {
     timeTextPainter.layout();
     timeTextPainter.paint(
       canvas,
-      Offset(
-        center.dx - timeTextPainter.width / 2,
-        center.dy + radius * 0.4,
-      ),
+      Offset(center.dx - timeTextPainter.width / 2, center.dy + radius * 0.4),
     );
   }
 
   @override
   bool shouldRepaint(_ClockPainter oldDelegate) {
-    return oldDelegate.angle != angle || oldDelegate.remainingHours != remainingHours;
+    return oldDelegate.hourAngle != hourAngle ||
+        oldDelegate.minuteAngle != minuteAngle ||
+        oldDelegate.hours != hours ||
+        oldDelegate.minutes != minutes;
   }
 }
-
