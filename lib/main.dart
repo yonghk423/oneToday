@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -11,6 +12,12 @@ void main() async {
   
   // 스플래시 화면 유지
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  
+  // 화면 방향을 세로 모드로 고정
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   
   // 알람 서비스 초기화
   await AlarmService.initialize();
@@ -25,6 +32,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // 스플래시 화면 제거 (앱이 준비되면)
     FlutterNativeSplash.remove();
+    
+    // 화면 방향을 세로 모드로 고정 (앱 전체)
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     
     return MaterialApp(
       title: 'One Today',
