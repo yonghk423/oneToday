@@ -32,9 +32,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   void _createGoal() async {
     if (_goalController.text.trim().isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('목표 이름을 입력해주세요')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('목표 이름을 입력해주세요')));
       }
       return;
     }
@@ -43,9 +43,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     final hasGoal = await GoalService.hasTodayGoal();
     if (hasGoal) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('오늘의 목표는 이미 설정되어 있습니다')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('오늘의 목표는 이미 설정되어 있습니다')));
       }
       return;
     }
@@ -87,7 +87,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -96,10 +96,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF6366F1),
-                    Color(0xFF8B5CF6),
-                  ],
+                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -175,9 +172,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   ),
                 ],
               ),
-            ).animate()
-              .fadeIn(duration: 400.ms)
-              .slideY(begin: -0.2, end: 0),
+            ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.2, end: 0),
             const SizedBox(height: 32),
 
             // 목표 이름 입력
@@ -186,10 +181,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               children: [
                 const Text(
                   '목표 이름',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
                 TextField(
@@ -198,15 +190,16 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                     hintText: '예: 영어 문법 공부',
                     hintStyle: TextStyle(color: Colors.grey.shade400),
                     counterStyle: TextStyle(color: Colors.grey.shade600),
-                    prefixIcon: const Icon(Icons.edit_note, color: Color(0xFF6366F1)),
+                    prefixIcon: const Icon(
+                      Icons.edit_note,
+                      color: Color(0xFF6366F1),
+                    ),
                   ),
                   maxLength: 50,
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
-            ).animate()
-              .fadeIn(delay: 200.ms)
-              .slideX(begin: -0.2, end: 0),
+            ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2, end: 0),
             const SizedBox(height: 24),
 
             // 구분선
@@ -220,9 +213,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   _selectedAlarms = alarms;
                 });
               },
-            ).animate()
-              .fadeIn(delay: 300.ms)
-              .slideX(begin: -0.2, end: 0),
+            ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.2, end: 0),
 
             const SizedBox(height: 32),
 
@@ -261,13 +252,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   ],
                 ),
               ),
-            ).animate()
-              .fadeIn(delay: 400.ms)
-              .slideY(begin: 0.2, end: 0),
+            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0),
           ],
         ),
       ),
     );
   }
 }
-
