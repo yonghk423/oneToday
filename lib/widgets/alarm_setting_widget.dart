@@ -21,6 +21,24 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
       backgroundColor: Colors.transparent,
       builder: (context) => _AlarmTimePickerSheet(
         onTimeSelected: (hours, minutes) {
+          // 중복 체크: 같은 시간(시간+분)이 이미 있는지 확인
+          final isDuplicate = _alarms.any(
+            (alarm) => alarm['hours'] == hours && alarm['minutes'] == minutes,
+          );
+
+          if (isDuplicate) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('$hours시간 ${minutes}분 전 알람이 이미 추가되어 있습니다'),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            );
+            return;
+          }
+
           setState(() {
             _alarms.add({'hours': hours, 'minutes': minutes});
             _updateAlarmList();

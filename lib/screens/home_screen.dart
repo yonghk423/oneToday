@@ -262,6 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.white,
                       height: 1.3,
                     ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
