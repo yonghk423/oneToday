@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'screens/home_screen.dart';
 import 'services/alarm_service.dart';
 import 'localization/app_localizations.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  
+  // 스플래시 화면 유지
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   
   // 알람 서비스 초기화
   await AlarmService.initialize();
@@ -19,6 +23,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 스플래시 화면 제거 (앱이 준비되면)
+    FlutterNativeSplash.remove();
+    
     return MaterialApp(
       title: 'One Today',
       localizationsDelegates: const [
