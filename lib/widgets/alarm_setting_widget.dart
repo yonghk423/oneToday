@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numberpicker/numberpicker.dart';
+import '../localization/app_localizations.dart';
 
 class AlarmSettingWidget extends StatefulWidget {
   final Function(List<int>) onAlarmChanged;
@@ -27,9 +28,10 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
           );
 
           if (isDuplicate) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('$hours시간 ${minutes}분 전 알람이 이미 추가되어 있습니다'),
+                content: Text(l10n.duplicateAlarm),
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -64,14 +66,15 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const Text(
-              '알람 설정',
-              style: TextStyle(
+            Text(
+              l10n.alarmSetting,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -84,7 +87,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                '선택사항',
+                l10n.optional,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey.shade600,
@@ -111,7 +114,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                 Icon(Icons.notifications_none, color: Colors.grey.shade400, size: 24),
                 const SizedBox(width: 12),
                 Text(
-                  '알람이 설정되지 않았습니다',
+                  l10n.noAlarmSet,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -147,15 +150,15 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                     color: Color(0xFF6366F1), size: 24),
                 ),
                 title: Text(
-                  '${alarm['hours']}시간 ${alarm['minutes']}분 전',
+                  l10n.alarmBefore(alarm['hours']!, alarm['minutes']!),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                subtitle: const Text(
-                  '자정까지 남은 시간 기준',
-                  style: TextStyle(fontSize: 12),
+                subtitle: Text(
+                  l10n.untilMidnightBased,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.close, color: Colors.red),
@@ -173,7 +176,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
           child: OutlinedButton.icon(
             onPressed: _addAlarm,
             icon: const Icon(Icons.add_alarm),
-            label: const Text('알람 추가', style: TextStyle(fontSize: 16)),
+            label: Text(l10n.addAlarm, style: const TextStyle(fontSize: 16)),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(color: const Color(0xFF6366F1).withOpacity(0.5), width: 1.5),
@@ -204,6 +207,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -228,16 +232,16 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
             ),
             const SizedBox(height: 24),
             // 타이틀
-            const Text(
-              '알람 시간 설정',
-              style: TextStyle(
+            Text(
+              l10n.alarmTimeSetting,
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              '자정까지 남은 시간 기준',
+              l10n.untilMidnightBased,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey.shade600,
@@ -255,7 +259,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                     child: Column(
                       children: [
                         Text(
-                          '시간',
+                          l10n.hours,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -314,7 +318,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                     child: Column(
                       children: [
                         Text(
-                          '분',
+                          l10n.minutes,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -373,7 +377,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(color: Colors.grey.shade300),
                       ),
-                      child: const Text('취소', style: TextStyle(fontSize: 16)),
+                      child: Text(l10n.cancel, style: const TextStyle(fontSize: 16)),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -384,7 +388,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         if (_hours == 0 && _minutes == 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text('시간을 선택해주세요'),
+                              content: Text(l10n.selectTime),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -401,7 +405,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text('확인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      child: Text(l10n.confirm, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],

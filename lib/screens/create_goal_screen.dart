@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../localization/app_localizations.dart';
 import '../widgets/alarm_setting_widget.dart';
 
 class CreateGoalScreen extends StatefulWidget {
@@ -30,11 +31,12 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   void _createGoal() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_goalController.text.trim().isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('목표 이름을 입력해주세요')));
+        ).showSnackBar(SnackBar(content: Text(l10n.goalNameRequired)));
       }
       return;
     }
@@ -45,7 +47,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('오늘의 목표는 이미 설정되어 있습니다')));
+        ).showSnackBar(SnackBar(content: Text(l10n.goalAlreadyExists)));
       }
       return;
     }
@@ -73,6 +75,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final remaining = _getRemainingTimeUntilMidnight();
     final hoursRemaining = remaining.inHours;
     final minutesRemaining = remaining.inMinutes % 60;
@@ -80,7 +83,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('오늘의 목표 설정'),
+        title: Text(l10n.createGoal),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -112,7 +115,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               child: Column(
                 children: [
                   Text(
-                    '오늘 남은 시간',
+                    l10n.todayRemainingTime,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white.withOpacity(0.9),
@@ -134,9 +137,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        '시간',
-                        style: TextStyle(
+                      Text(
+                        l10n.hours,
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -152,9 +155,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        '분',
-                        style: TextStyle(
+                      Text(
+                        l10n.minutes,
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -164,7 +167,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '자정까지 남은 시간입니다',
+                    l10n.untilMidnightTime,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white.withOpacity(0.8),
@@ -179,15 +182,18 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '목표 이름',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                Text(
+                  l10n.goalName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _goalController,
                   decoration: InputDecoration(
-                    hintText: '예: 영어 문법 공부',
+                    hintText: l10n.goalNameHint,
                     hintStyle: TextStyle(color: Colors.grey.shade400),
                     counterStyle: TextStyle(color: Colors.grey.shade600),
                     prefixIcon: const Icon(
@@ -237,14 +243,14 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   elevation: 0,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.flag, size: 24),
-                    SizedBox(width: 12),
+                    const Icon(Icons.flag, size: 24),
+                    const SizedBox(width: 12),
                     Text(
-                      '목표 생성',
-                      style: TextStyle(
+                      l10n.createGoalButton,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

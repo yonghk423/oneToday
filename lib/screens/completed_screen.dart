@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
 import 'home_screen.dart';
 import '../services/goal_service.dart';
+import '../localization/app_localizations.dart';
 
 class CompletedScreen extends StatefulWidget {
   const CompletedScreen({super.key});
@@ -44,10 +45,11 @@ class _CompletedScreenState extends State<CompletedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('One Today'),
+        title: Text(l10n.appTitle),
         automaticallyImplyLeading: false,
       ),
       body: Stack(
@@ -86,9 +88,9 @@ class _CompletedScreenState extends State<CompletedScreen> {
                     .then()
                     .shake(hz: 2, duration: 400.ms),
                   const SizedBox(height: 40),
-                  const Text(
-                    '🎉 완료! 🎉',
-                    style: TextStyle(
+                  Text(
+                    '🎉 ${l10n.completed} 🎉',
+                    style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                     ),
@@ -98,7 +100,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
                     .slideY(begin: 0.3, end: 0),
                   const SizedBox(height: 16),
                   Text(
-                    '오늘의 목표를 달성했어요!',
+                    l10n.goalCompleted,
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.grey.shade700,
@@ -109,7 +111,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
                     .fadeIn(delay: 400.ms),
                   const SizedBox(height: 8),
                   Text(
-                    '내일도 계속 도전해보세요',
+                    l10n.continueTomorrow,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade600,
@@ -150,9 +152,9 @@ class _CompletedScreenState extends State<CompletedScreen> {
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
-                        '확인',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.confirm,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
