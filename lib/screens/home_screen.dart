@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../localization/app_localizations.dart';
 import 'create_goal_screen.dart';
 import 'completed_screen.dart';
 import 'failed_screen.dart';
@@ -96,9 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(title: const Text('One Today')),
+      appBar: AppBar(title: Text(l10n.appTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -126,13 +128,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   .fadeIn(duration: 600.ms)
                   .scale(delay: 200.ms, duration: 400.ms),
               const SizedBox(height: 32),
-              const Text(
-                '오늘 목표가 없습니다',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Text(
+                l10n.noGoal,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ).animate().fadeIn(delay: 300.ms),
               const SizedBox(height: 12),
               Text(
-                '하루에 딱 하나, 오늘 꼭 이루고 싶은\n목표를 설정해보세요',
+                l10n.noGoalDescription,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
@@ -161,14 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     elevation: 0,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.add_circle_outline, size: 24),
-                      SizedBox(width: 8),
+                      const Icon(Icons.add_circle_outline, size: 24),
+                      const SizedBox(width: 8),
                       Text(
-                        '목표 추가',
-                        style: TextStyle(
+                        l10n.addGoal,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -185,9 +190,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGoalState() {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(title: const Text('One Today')),
+      appBar: AppBar(title: Text(l10n.appTitle)),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -229,9 +235,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Text(
-                        '오늘의 목표',
-                        style: TextStyle(
+                      Text(
+                        l10n.todayGoal,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white70,
                           fontWeight: FontWeight.w500,
@@ -276,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Text(
-                      '남은 시간',
+                      l10n.remainingTime,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
@@ -303,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
-                            '시간',
+                            l10n.hours,
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.grey.shade600,
@@ -324,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
-                            '분',
+                            l10n.minutes,
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.grey.shade600,
@@ -345,10 +351,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '자정까지 남은 시간',
-                        style: TextStyle(
+                        l10n.untilMidnight,
+                        style: const TextStyle(
                           fontSize: 12,
-                          color: const Color(0xFF6366F1),
+                          color: Color(0xFF6366F1),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -380,14 +386,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   elevation: 0,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.check_circle, size: 28),
-                    SizedBox(width: 12),
+                    const Icon(Icons.check_circle, size: 28),
+                    const SizedBox(width: 12),
                     Text(
-                      '목표 완료',
-                      style: TextStyle(
+                      l10n.completeGoal,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),

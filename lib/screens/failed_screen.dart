@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../localization/app_localizations.dart';
 import 'home_screen.dart';
 
 class FailedScreen extends StatefulWidget {
@@ -26,10 +27,11 @@ class _FailedScreenState extends State<FailedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('One Today'),
+        title: Text(l10n.appTitle),
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -66,9 +68,9 @@ class _FailedScreenState extends State<FailedScreen> {
                 .then()
                 .shake(hz: 2, duration: 400.ms),
               const SizedBox(height: 40),
-              const Text(
-                '시간이 지났어요',
-                style: TextStyle(
+              Text(
+                l10n.timePassed,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
@@ -78,7 +80,7 @@ class _FailedScreenState extends State<FailedScreen> {
                 .slideY(begin: 0.3, end: 0),
               const SizedBox(height: 16),
               Text(
-                '오늘의 목표를 완료하지 못했습니다',
+                l10n.goalNotCompleted,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey.shade700,
@@ -89,7 +91,7 @@ class _FailedScreenState extends State<FailedScreen> {
                 .fadeIn(delay: 400.ms),
               const SizedBox(height: 8),
               Text(
-                '괜찮아요! 내일 다시 도전해봐요',
+                l10n.tryAgainTomorrow,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
@@ -126,9 +128,9 @@ class _FailedScreenState extends State<FailedScreen> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    '확인',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.confirm,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
