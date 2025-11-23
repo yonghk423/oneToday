@@ -61,7 +61,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     // 목표 저장
     await GoalService.saveGoal(goal);
 
-    // 알람 스케줄링
+    // 알람 스케줄링 (실제 설정한 시간에 맞춰 알람 표시)
     if (_selectedAlarms.isNotEmpty) {
       await AlarmService.scheduleAlarms(goal);
     }

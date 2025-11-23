@@ -198,6 +198,27 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: const Text('One Today'),
+        actions: [
+          // 알람 테스트 버튼 (5초 후 알람 표시)
+          IconButton(
+            icon: const Icon(Icons.notifications_active_outlined),
+            tooltip: '5초 후 알람 테스트',
+            onPressed: () async {
+              if (_currentGoal == null) return;
+              
+              await AlarmService.showTestNotification(_currentGoal!);
+              if (!mounted) return;
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('5초 후 알람이 표시됩니다. 앱을 잠그거나 다른 앱으로 이동해보세요!'),
+                  duration: Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
