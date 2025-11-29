@@ -5,23 +5,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'screens/home_screen.dart';
 import 'services/alarm_service.dart';
+import 'services/widget_service.dart';
 import 'localization/app_localizations.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  
+
   // 스플래시 화면 유지
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
+
   // 화면 방향을 세로 모드로 고정
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   // 알람 서비스 초기화
   await AlarmService.initialize();
-  
+
+  // 위젯 서비스 초기화
+  await WidgetService.initialize();
+
   runApp(const MyApp());
 }
 
@@ -32,13 +36,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // 스플래시 화면 제거 (앱이 준비되면)
     FlutterNativeSplash.remove();
-    
+
     // 화면 방향을 세로 모드로 고정 (앱 전체)
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     return MaterialApp(
       title: 'One Today',
       localizationsDelegates: const [
@@ -113,7 +117,10 @@ class MyApp extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.grey.shade50,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 16,
+          ),
         ),
       ),
       home: const HomeScreen(),

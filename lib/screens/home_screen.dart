@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../services/widget_service.dart';
 import '../localization/app_localizations.dart';
 import 'create_goal_screen.dart';
 import 'completed_screen.dart';
@@ -20,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Goal? _currentGoal;
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
+  int _lastUpdatedMinute = -1; // 위젯 업데이트를 위한 마지막 업데이트 분
 
   @override
   void initState() {
@@ -41,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _updateRemainingTime();
       }
     });
+    // 위젯 업데이트
+    await WidgetService.updateWidget(goal);
   }
 
   void _startTimer() {
@@ -59,6 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day + 1, 0, 0);
     _remainingTime = midnight.difference(now);
+
+    // 1분마다 위젯 업데이트 (너무 자주 업데이트하지 않기 위해)
+    final currentMinute = now.minute;
+    if (currentMinute != _lastUpdatedMinute) {
+      _lastUpdatedMinute = currentMinute;
+      WidgetService.updateWidget(_currentGoal);
+    }
 
     // 시간이 만료되었으면 실패 화면으로
     if (_remainingTime.isNegative || _remainingTime.inHours < 0) {
@@ -422,6 +433,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _completeGoal() async {
     await GoalService.completeGoal();
     await AlarmService.cancelAllAlarms();
+    // 완료된 목표로 위젯 업데이트
+    final completedGoal = _currentGoal?.copyWith(completed: true);
+    await WidgetService.updateWidget(completedGoal);
     if (mounted) {
       Navigator.pushReplacement(
         context,

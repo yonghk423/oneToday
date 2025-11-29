@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">One Today</string>
+    <string name="widget_description">오늘의 목표와 남은 시간을 확인하세요</string>
+</resources>
+
