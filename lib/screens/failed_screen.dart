@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../services/widget_service.dart';
 import '../localization/app_localizations.dart';
 import 'home_screen.dart';
 
@@ -23,6 +24,8 @@ class _FailedScreenState extends State<FailedScreen> {
     // 실패한 목표 삭제 및 알람 취소
     await GoalService.deleteGoal();
     await AlarmService.cancelAllAlarms();
+    // 위젯 업데이트 (목표 없음)
+    await WidgetService.updateWidget(null);
   }
 
   @override
