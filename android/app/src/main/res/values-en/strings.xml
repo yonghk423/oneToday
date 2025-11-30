@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">One Today</string>
+    <string name="widget_description">Check today\'s goal and remaining time</string>
+    <!-- Widget text (English) -->
+    <string name="widget_today_goal">Today\'s Goal</string>
+    <string name="widget_hours_label">hours</string>
+    <string name="widget_minutes_label">minutes</string>
+    <string name="widget_until_midnight">Until midnight</string>
+    <string name="widget_set_goal">Set a goal</string>
+</resources>
+

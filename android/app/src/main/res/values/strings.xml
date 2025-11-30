@@ -2,5 +2,11 @@
 <resources>
     <string name="app_name">One Today</string>
     <string name="widget_description">오늘의 목표와 남은 시간을 확인하세요</string>
+    <!-- 위젯 텍스트 (한국어) -->
+    <string name="widget_today_goal">오늘의 목표</string>
+    <string name="widget_hours_label">시간</string>
+    <string name="widget_minutes_label">분</string>
+    <string name="widget_until_midnight">자정까지</string>
+    <string name="widget_set_goal">목표를 설정하세요</string>
 </resources>
 

@@ -1,8 +1,10 @@
 package com.example.onetoday
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
 import com.example.onetoday.R
@@ -72,6 +74,19 @@ class OneTodayWidget : AppWidgetProvider() {
                 views.setViewVisibility(R.id.widget_goal_layout, android.view.View.GONE)
                 views.setViewVisibility(R.id.widget_empty_layout, android.view.View.VISIBLE)
             }
+
+            // 위젯 탭 시 앱 열기 위한 PendingIntent 설정
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            // 위젯 전체에 클릭 리스너 설정 (루트 레이아웃에 ID 추가 필요)
+            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
 
             // 위젯 업데이트
             appWidgetManager.updateAppWidget(appWidgetId, views)

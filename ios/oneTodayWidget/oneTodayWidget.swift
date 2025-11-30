@@ -89,22 +89,33 @@ struct oneTodayWidgetEntryView : View {
                     .lineLimit(2)
                     .foregroundColor(.primary)
                 
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(entry.remainingHours)")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                // 시간과 분을 더 컴팩트하게 표시 (숫자 생략 방지)
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    // 시간 영역
+                    HStack(alignment: .firstTextBaseline, spacing: 2) {
+                        Text("\(entry.remainingHours)")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(1)
+                        
+                        Text("시간")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                     
-                    Text("시간")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Text("\(entry.remainingMinutes)")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
-                    
-                    Text("분")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    // 분 영역
+                    HStack(alignment: .firstTextBaseline, spacing: 2) {
+                        Text("\(entry.remainingMinutes)")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(1)
+                        
+                        Text("분")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Text("자정까지")
@@ -112,6 +123,7 @@ struct oneTodayWidgetEntryView : View {
                     .foregroundColor(.secondary)
             }
             .padding()
+            .widgetURL(URL(string: "onetoday://"))
         } else {
             // 목표가 없는 경우
             VStack {
@@ -120,6 +132,7 @@ struct oneTodayWidgetEntryView : View {
                     .foregroundColor(.secondary)
             }
             .padding()
+            .widgetURL(URL(string: "onetoday://"))
         }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -16,9 +17,10 @@
 
         <!-- 오늘의 목표 헤더 -->
         <TextView
+            android:id="@+id/widget_today_goal_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="오늘의 목표"
+            android:text="@string/widget_today_goal"
             android:textColor="#6366F1"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -29,7 +31,7 @@
             android:id="@+id/widget_goal_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="목표를 설정하세요"
+            android:text="@string/widget_set_goal"
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -54,9 +56,10 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/widget_hours_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="시간"
+                android:text="@string/widget_hours_label"
                 android:textColor="#666666"
                 android:textSize="14sp"
                 android:layout_marginStart="4dp"
@@ -72,9 +75,10 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/widget_minutes_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="분"
+                android:text="@string/widget_minutes_label"
                 android:textColor="#666666"
                 android:textSize="14sp"
                 android:layout_marginStart="4dp" />
@@ -82,9 +86,10 @@
 
         <!-- 자정까지 텍스트 -->
         <TextView
+            android:id="@+id/widget_until_midnight_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="자정까지"
+            android:text="@string/widget_until_midnight"
             android:textColor="#999999"
             android:textSize="10sp"
             android:layout_marginTop="4dp" />
@@ -100,9 +105,10 @@
         android:visibility="visible">
 
         <TextView
+            android:id="@+id/widget_set_goal_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="목표를 설정하세요"
+            android:text="@string/widget_set_goal"
             android:textColor="#999999"
             android:textSize="14sp"
             android:gravity="center" />
