@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../services/alarm_service.dart';
+import '../services/widget_service.dart';
 import '../localization/app_localizations.dart';
 import '../widgets/alarm_setting_widget.dart';
 
@@ -67,6 +68,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     if (_selectedAlarms.isNotEmpty) {
       await AlarmService.scheduleAlarms(goal);
     }
+
+    // 위젯 업데이트
+    await WidgetService.updateWidget(goal);
 
     if (mounted) {
       Navigator.pop(context, true);

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
 import 'home_screen.dart';
 import '../services/goal_service.dart';
+import '../services/widget_service.dart';
 import '../localization/app_localizations.dart';
 
 class CompletedScreen extends StatefulWidget {
@@ -26,6 +27,8 @@ class _CompletedScreenState extends State<CompletedScreen> {
       if (mounted) {
         // 목표 삭제 후 홈 화면으로 이동
         await GoalService.deleteGoal();
+        // 위젯 업데이트 (목표 없음)
+        await WidgetService.updateWidget(null);
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -135,6 +138,8 @@ class _CompletedScreenState extends State<CompletedScreen> {
                       onPressed: () async {
                         // 목표 삭제 후 홈 화면으로 이동
                         await GoalService.deleteGoal();
+                        // 위젯 업데이트 (목표 없음)
+                        await WidgetService.updateWidget(null);
                         if (mounted) {
                           Navigator.pushAndRemoveUntil(
                             context,
