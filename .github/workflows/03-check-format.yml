@@ -3,8 +3,6 @@ name: 03 - Check Format
 on:
   pull_request:
     branches: [ develop, master ]
-  push:
-    branches: [ develop, master ]
 
 jobs:
   format:
