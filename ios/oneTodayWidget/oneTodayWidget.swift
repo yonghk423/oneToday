@@ -37,19 +37,43 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<GoalEntry>) -> ()) {
-        let entry = loadGoalData()
+        var entries: [GoalEntry] = []
+        let now = Date()
+        let calendar = Calendar.current
         
-        // 1분마다 업데이트
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+        // 다음 60분 동안의 엔트리 생성 (매 분마다)
+        for minuteOffset in 0..<60 {
+            guard let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: now) else {
+                continue
+            }
+            
+            // 각 시간에 맞는 남은 시간 계산
+            let entry = createEntryForDate(entryDate)
+            entries.append(entry)
+        }
+        
+        // 다음 업데이트는 60분 후
+        guard let nextUpdate = calendar.date(byAdding: .minute, value: 60, to: now) else {
+            let singleEntry = createEntryForDate(now)
+            let timeline = Timeline(entries: [singleEntry], policy: .after(now))
+            completion(timeline)
+            return
+        }
+        
+        let timeline = Timeline(entries: entries, policy: .after(nextUpdate))
         completion(timeline)
     }
     
     // App Group의 UserDefaults에서 데이터 읽기
     private func loadGoalData() -> GoalEntry {
+        return createEntryForDate(Date())
+    }
+    
+    // 특정 날짜/시간에 대한 엔트리 생성 (동적 시간 계산)
+    private func createEntryForDate(_ date: Date) -> GoalEntry {
         guard let defaults = UserDefaults(suiteName: appGroupId) else {
             return GoalEntry(
-                date: Date(),
+                date: date,
                 hasGoal: false,
                 goalName: "목표를 설정하세요",
                 remainingHours: 0,
@@ -58,17 +82,48 @@ struct Provider: TimelineProvider {
         }
         
         let hasGoal = defaults.bool(forKey: "has_goal")
-        let goalName = defaults.string(forKey: "goal_name") ?? "목표를 설정하세요"
-        let remainingHours = defaults.integer(forKey: "remaining_hours")
-        let remainingMinutes = defaults.integer(forKey: "remaining_minutes")
+        let goalName = defaults.string(forKey: "goal_name") ?? ""
         
-        return GoalEntry(
-            date: Date(),
-            hasGoal: hasGoal,
-            goalName: goalName,
-            remainingHours: remainingHours,
-            remainingMinutes: remainingMinutes
-        )
+        // 목표가 있는 경우에만 동적 시간 계산
+        if hasGoal && !goalName.isEmpty && goalName != "목표를 설정하세요" {
+            // 특정 시간을 기준으로 자정까지 남은 시간 계산
+            let (remainingHours, remainingMinutes) = calculateRemainingTime(for: date)
+            
+            return GoalEntry(
+                date: date,
+                hasGoal: true,
+                goalName: goalName,
+                remainingHours: remainingHours,
+                remainingMinutes: remainingMinutes
+            )
+        } else {
+            // 목표가 없는 경우
+            return GoalEntry(
+                date: date,
+                hasGoal: false,
+                goalName: "목표를 설정하세요",
+                remainingHours: 0,
+                remainingMinutes: 0
+            )
+        }
+    }
+    
+    // 특정 날짜를 기준으로 자정까지 남은 시간 계산
+    private func calculateRemainingTime(for date: Date = Date()) -> (hours: Int, minutes: Int) {
+        let calendar = Calendar.current
+        
+        // 다음 날 자정 시간 계산
+        guard let midnight = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: calendar.date(byAdding: .day, value: 1, to: date) ?? date) else {
+            return (0, 0)
+        }
+        
+        // 남은 시간 계산
+        let timeInterval = midnight.timeIntervalSince(date)
+        let totalMinutes = Int(timeInterval / 60)
+        let hours = totalMinutes / 60
+        let minutes = totalMinutes % 60
+        
+        return (hours, minutes)
     }
 }
 
@@ -151,3 +206,4 @@ struct oneTodayWidget: Widget {
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
+
