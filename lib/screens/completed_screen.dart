@@ -19,9 +19,11 @@ class _CompletedScreenState extends State<CompletedScreen> {
   @override
   void initState() {
     super.initState();
-    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
     _confettiController.play();
-    
+
     // 3초 후 홈 화면으로 이동
     Future.delayed(const Duration(seconds: 3), () async {
       if (mounted) {
@@ -64,32 +66,33 @@ class _CompletedScreenState extends State<CompletedScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.green.shade400,
-                          Colors.green.shade600,
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.green.withOpacity(0.4),
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green.shade400,
+                              Colors.green.shade600,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.4),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.check_circle,
-                      size: 100,
-                      color: Colors.white,
-                    ),
-                  ).animate()
-                    .scale(duration: 600.ms, curve: Curves.elasticOut)
-                    .then()
-                    .shake(hz: 2, duration: 400.ms),
+                        child: const Icon(
+                          Icons.check_circle,
+                          size: 100,
+                          color: Colors.white,
+                        ),
+                      )
+                      .animate()
+                      .scale(duration: 600.ms, curve: Curves.elasticOut)
+                      .then()
+                      .shake(hz: 2, duration: 400.ms),
                   const SizedBox(height: 40),
                   Text(
                     '🎉 ${l10n.completed} 🎉',
@@ -98,9 +101,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
-                  ).animate()
-                    .fadeIn(delay: 300.ms)
-                    .slideY(begin: 0.3, end: 0),
+                  ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3, end: 0),
                   const SizedBox(height: 16),
                   Text(
                     l10n.goalCompleted,
@@ -110,18 +111,13 @@ class _CompletedScreenState extends State<CompletedScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
-                  ).animate()
-                    .fadeIn(delay: 400.ms),
+                  ).animate().fadeIn(delay: 400.ms),
                   const SizedBox(height: 8),
                   Text(
                     l10n.continueTomorrow,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                     textAlign: TextAlign.center,
-                  ).animate()
-                    .fadeIn(delay: 500.ms),
+                  ).animate().fadeIn(delay: 500.ms),
                   const SizedBox(height: 48),
                   Container(
                     decoration: BoxDecoration(
@@ -143,7 +139,9 @@ class _CompletedScreenState extends State<CompletedScreen> {
                         if (mounted) {
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
                             (route) => false,
                           );
                         }
@@ -165,9 +163,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
                         ),
                       ),
                     ),
-                  ).animate()
-                    .fadeIn(delay: 600.ms)
-                    .slideY(begin: 0.2, end: 0),
+                  ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2, end: 0),
                 ],
               ),
             ),
@@ -196,4 +192,3 @@ class _CompletedScreenState extends State<CompletedScreen> {
     );
   }
 }
-

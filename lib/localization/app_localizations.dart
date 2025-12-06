@@ -100,14 +100,16 @@ class AppLocalizations {
   // 동적 텍스트를 위한 메서드
   String alarmBefore(int hours, int minutes) {
     final format = translate('alarm_before_format');
-    return format.replaceAll('{hours}', hours.toString()).replaceAll('{minutes}', minutes.toString());
+    return format
+        .replaceAll('{hours}', hours.toString())
+        .replaceAll('{minutes}', minutes.toString());
   }
 
   String translate(String key) {
     // 현재 언어의 번역이 있으면 사용, 없으면 영어로, 그것도 없으면 key 반환
-    return _localizedValues[locale.languageCode]?[key] ?? 
-           _localizedValues['en']?[key] ?? 
-           key;
+    return _localizedValues[locale.languageCode]?[key] ??
+        _localizedValues['en']?[key] ??
+        key;
   }
 
   // 편의 메서드들
@@ -168,4 +170,3 @@ class _AppLocalizationsDelegate
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
-

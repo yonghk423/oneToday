@@ -74,10 +74,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
           children: [
             Text(
               l10n.alarmSetting,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(width: 8),
             Container(
@@ -111,14 +108,15 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
             ),
             child: Row(
               children: [
-                Icon(Icons.notifications_none, color: Colors.grey.shade400, size: 24),
+                Icon(
+                  Icons.notifications_none,
+                  color: Colors.grey.shade400,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   l10n.noAlarmSet,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -136,18 +134,26 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
+                border: Border.all(
+                  color: const Color(0xFF6366F1).withOpacity(0.3),
+                ),
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: const Color(0xFF6366F1).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.notifications_active, 
-                    color: Color(0xFF6366F1), size: 24),
+                  child: const Icon(
+                    Icons.notifications_active,
+                    color: Color(0xFF6366F1),
+                    size: 24,
+                  ),
                 ),
                 title: Text(
                   l10n.alarmBefore(alarm['hours']!, alarm['minutes']!),
@@ -165,9 +171,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                   onPressed: () => _removeAlarm(index),
                 ),
               ),
-            ).animate()
-              .fadeIn(duration: 300.ms)
-              .slideX(begin: -0.2, end: 0);
+            ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.2, end: 0);
           }),
         const SizedBox(height: 16),
         // 알람 추가 버튼
@@ -179,7 +183,10 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
             label: Text(l10n.addAlarm, style: const TextStyle(fontSize: 16)),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: BorderSide(color: const Color(0xFF6366F1).withOpacity(0.5), width: 1.5),
+              side: BorderSide(
+                color: const Color(0xFF6366F1).withOpacity(0.5),
+                width: 1.5,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -234,18 +241,12 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
             // 타이틀
             Text(
               l10n.alarmTimeSetting,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.untilMidnightBased,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 32),
             // 시간 선택기
@@ -291,12 +292,15 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                             decoration: BoxDecoration(
                               border: Border.symmetric(
                                 horizontal: BorderSide(
-                                  color: const Color(0xFF6366F1).withOpacity(0.3),
+                                  color: const Color(
+                                    0xFF6366F1,
+                                  ).withOpacity(0.3),
                                   width: 2,
                                 ),
                               ),
                             ),
-                            onChanged: (value) => setState(() => _hours = value),
+                            onChanged: (value) =>
+                                setState(() => _hours = value),
                           ),
                         ),
                       ],
@@ -350,12 +354,15 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                             decoration: BoxDecoration(
                               border: Border.symmetric(
                                 horizontal: BorderSide(
-                                  color: const Color(0xFF8B5CF6).withOpacity(0.3),
+                                  color: const Color(
+                                    0xFF8B5CF6,
+                                  ).withOpacity(0.3),
                                   width: 2,
                                 ),
                               ),
                             ),
-                            onChanged: (value) => setState(() => _minutes = value),
+                            onChanged: (value) =>
+                                setState(() => _minutes = value),
                           ),
                         ),
                       ],
@@ -377,7 +384,10 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(color: Colors.grey.shade300),
                       ),
-                      child: Text(l10n.cancel, style: const TextStyle(fontSize: 16)),
+                      child: Text(
+                        l10n.cancel,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -405,7 +415,13 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text(l10n.confirm, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      child: Text(
+                        l10n.confirm,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -415,8 +431,6 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
           ],
         ),
       ),
-    ).animate()
-      .fadeIn(duration: 200.ms)
-      .slideY(begin: 0.2, end: 0);
+    ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.2, end: 0);
   }
 }
