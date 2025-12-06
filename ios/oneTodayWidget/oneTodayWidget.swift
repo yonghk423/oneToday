@@ -88,14 +88,27 @@ struct Provider: TimelineProvider {
         if hasGoal && !goalName.isEmpty && goalName != "목표를 설정하세요" {
             // 특정 시간을 기준으로 자정까지 남은 시간 계산
             let (remainingHours, remainingMinutes) = calculateRemainingTime(for: date)
+        
+            // 자정이 지났거나 남은 시간이 0 이하면 목표 종료
+            if remainingHours < 0 || (remainingHours == 0 && remainingMinutes <= 0) {
+                // 목표가 만료된 경우 (자정 이후)
+                return GoalEntry(
+                    date: date,
+                    hasGoal: false,
+                    goalName: "목표를 설정하세요",
+                    remainingHours: 0,
+                    remainingMinutes: 0
+                )
+            }
             
-            return GoalEntry(
+            // 목표가 유효한 경우
+        return GoalEntry(
                 date: date,
                 hasGoal: true,
-                goalName: goalName,
-                remainingHours: remainingHours,
-                remainingMinutes: remainingMinutes
-            )
+            goalName: goalName,
+            remainingHours: remainingHours,
+            remainingMinutes: remainingMinutes
+        )
         } else {
             // 목표가 없는 경우
             return GoalEntry(
@@ -206,4 +219,3 @@ struct oneTodayWidget: Widget {
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
-
