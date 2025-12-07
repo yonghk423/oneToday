@@ -81,20 +81,14 @@ jobs:
           # 태그 메시지 생성
           TAG_MSG="Release version $VERSION"
           if [ -n "$PREV_VERSION" ]; then
-            TAG_MSG="$TAG_MSG
-
-Previous version: $PREV_VERSION"
+            TAG_MSG="$TAG_MSG\n\nPrevious version: $PREV_VERSION"
           fi
           if [ -n "$CHANGELOG_CONTENT" ]; then
-            TAG_MSG="$TAG_MSG
-
-$CHANGELOG_CONTENT"
+            TAG_MSG="$TAG_MSG\n\n$CHANGELOG_CONTENT"
           else
             # CHANGELOG가 없으면 커밋 메시지 사용
             COMMIT_MSG=$(git log -1 --pretty=%B)
-            TAG_MSG="$TAG_MSG
-
-$COMMIT_MSG"
+            TAG_MSG="$TAG_MSG\n\n$COMMIT_MSG"
           fi
           
           git config user.name "github-actions[bot]"
@@ -110,7 +104,7 @@ $COMMIT_MSG"
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.current-version.outputs.VERSION }}
-          name: Release ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.current-version.outputs.VERSION }}
           body: |
             ## Release ${{ steps.current-version.outputs.VERSION }}
             
