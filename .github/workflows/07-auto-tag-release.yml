@@ -10,13 +10,14 @@ jobs:
   auto-tag-release:
     name: Auto create tag and release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 태그 및 릴리즈 생성 권한
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Get current version from pubspec.yaml
         id: current-version
@@ -96,7 +97,7 @@ jobs:
           
           git tag -a "$TAG" -m "$TAG_MSG"
           
-          git push origin "$TAG"
+          git push origin "$TAG" || git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "$TAG"
           echo "✅ Tag $TAG created and pushed"
       
       - name: Create GitHub Release
