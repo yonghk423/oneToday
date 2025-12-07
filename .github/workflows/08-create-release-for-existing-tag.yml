@@ -12,6 +12,8 @@ jobs:
   create-release:
     name: Create GitHub Release for existing tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 릴리즈 생성 권한
     
     steps:
       - name: Checkout code
@@ -22,6 +24,10 @@ jobs:
       - name: Verify tag exists
         run: |
           TAG="${{ github.event.inputs.tag_name }}"
+          if [ -z "$TAG" ]; then
+            echo "❌ Tag name is empty"
+            exit 1
+          fi
           if ! git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "❌ Tag $TAG does not exist"
             exit 1
@@ -32,6 +38,10 @@ jobs:
         id: version
         run: |
           TAG="${{ github.event.inputs.tag_name }}"
+          if [ -z "$TAG" ]; then
+            echo "❌ Tag name is empty"
+            exit 1
+          fi
           VERSION=${TAG#v}  # v 제거
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
@@ -40,6 +50,10 @@ jobs:
         id: tag-message
         run: |
           TAG="${{ github.event.inputs.tag_name }}"
+          if [ -z "$TAG" ]; then
+            echo "❌ Tag name is empty"
+            exit 1
+          fi
           TAG_MSG=$(git tag -l --format='%(contents)' "$TAG")
           echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
           echo "$TAG_MSG" >> $GITHUB_OUTPUT
