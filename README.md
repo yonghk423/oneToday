@@ -256,6 +256,11 @@ flutter build ios --release
 
 자세한 내용은 [VERSION_MANAGEMENT.md](./VERSION_MANAGEMENT.md)를 참고하세요.
 
+### 관련 문서
+- [CHANGELOG.md](./CHANGELOG.md) - 변경 이력
+- [ROLLBACK_PLAN.md](./ROLLBACK_PLAN.md) - 롤백 계획
+- [RELEASE_HISTORY.md](./RELEASE_HISTORY.md) - 배포 이력
+
 ## 📝 향후 개선 사항
 
 - [ ] 목표 히스토리 기능
