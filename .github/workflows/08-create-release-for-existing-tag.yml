@@ -13,7 +13,7 @@ jobs:
     name: Create GitHub Release for existing tag
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 릴리즈 생성 권한
+      contents: write  # 릴리즈 생성 및 최신 릴리즈 설정 권한
     
     steps:
       - name: Checkout code
