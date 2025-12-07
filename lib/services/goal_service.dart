@@ -16,7 +16,7 @@ class GoalService {
   static Future<Goal?> loadGoal() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_goalKey);
-    
+
     if (jsonString == null) {
       return null;
     }
@@ -24,14 +24,14 @@ class GoalService {
     try {
       final json = jsonDecode(jsonString) as Map<String, dynamic>;
       final goal = Goal.fromJson(json);
-      
+
       // 오늘 날짜인지 확인
       if (!goal.isToday()) {
         // 다음날이면 삭제
         await deleteGoal();
         return null;
       }
-      
+
       return goal;
     } catch (e) {
       // 파싱 에러 시 삭제
@@ -61,4 +61,3 @@ class GoalService {
     }
   }
 }
-

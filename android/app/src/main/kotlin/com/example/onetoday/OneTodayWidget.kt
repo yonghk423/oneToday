@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
 import com.example.onetoday.R
+import java.time.LocalDateTime
 
 /**
  * One Today 홈 화면 위젯 Provider
@@ -55,20 +56,29 @@ class OneTodayWidget : AppWidgetProvider() {
             
             val hasGoal = prefs.getBoolean(KEY_HAS_GOAL, false)
             val goalName = prefs.getString(KEY_GOAL_NAME, "") ?: ""
-            val remainingHours = prefs.getInt(KEY_REMAINING_HOURS, 0)
-            val remainingMinutes = prefs.getInt(KEY_REMAINING_MINUTES, 0)
 
             // RemoteViews 생성
             val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
+            // 목표가 있고, 자정이 지나지 않았는지 확인
             if (hasGoal && goalName.isNotEmpty()) {
-                // 목표가 있는 경우
-                views.setViewVisibility(R.id.widget_goal_layout, android.view.View.VISIBLE)
-                views.setViewVisibility(R.id.widget_empty_layout, android.view.View.GONE)
+                // 현재 시간을 기준으로 자정까지 남은 시간 계산
+                val (remainingHours, remainingMinutes) = calculateRemainingTime()
                 
-                views.setTextViewText(R.id.widget_goal_name, goalName)
-                views.setTextViewText(R.id.widget_hours, remainingHours.toString())
-                views.setTextViewText(R.id.widget_minutes, remainingMinutes.toString())
+                // 자정이 지났거나 남은 시간이 0 이하면 목표 종료
+                if (remainingHours < 0 || (remainingHours == 0 && remainingMinutes <= 0)) {
+                    // 목표가 만료된 경우 (자정 이후)
+                    views.setViewVisibility(R.id.widget_goal_layout, android.view.View.GONE)
+                    views.setViewVisibility(R.id.widget_empty_layout, android.view.View.VISIBLE)
+                } else {
+                    // 목표가 유효한 경우
+                    views.setViewVisibility(R.id.widget_goal_layout, android.view.View.VISIBLE)
+                    views.setViewVisibility(R.id.widget_empty_layout, android.view.View.GONE)
+                    
+                    views.setTextViewText(R.id.widget_goal_name, goalName)
+                    views.setTextViewText(R.id.widget_hours, remainingHours.toString())
+                    views.setTextViewText(R.id.widget_minutes, remainingMinutes.toString())
+                }
             } else {
                 // 목표가 없는 경우
                 views.setViewVisibility(R.id.widget_goal_layout, android.view.View.GONE)
@@ -90,6 +100,22 @@ class OneTodayWidget : AppWidgetProvider() {
 
             // 위젯 업데이트
             appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+        
+        /**
+         * 현재 시간을 기반으로 자정까지 남은 시간 계산
+         */
+        private fun calculateRemainingTime(): Pair<Int, Int> {
+            val now = LocalDateTime.now()
+            val midnight = now.toLocalDate().plusDays(1).atStartOfDay()
+            
+            // 남은 시간 계산
+            val diff = java.time.Duration.between(now, midnight)
+            val totalMinutes = diff.toMinutes().toInt()
+            val hours = totalMinutes / 60
+            val minutes = totalMinutes % 60
+            
+            return Pair(hours, minutes)
         }
     }
 }

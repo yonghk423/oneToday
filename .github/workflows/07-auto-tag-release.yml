@@ -1,0 +1,126 @@
+name: 07 - Auto Tag and Release
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'pubspec.yaml'  # pubspec.yaml이 변경될 때만 실행
+
+jobs:
+  auto-tag-release:
+    name: Auto create tag and release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Get current version from pubspec.yaml
+        id: current-version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d' ' -f2 | cut -d'+' -f1)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+      
+      - name: Get previous version (from previous commit)
+        id: previous-version
+        run: |
+          # 이전 커밋의 pubspec.yaml에서 버전 가져오기
+          PREV_VERSION=$(git show HEAD~1:pubspec.yaml 2>/dev/null | grep '^version:' | cut -d' ' -f2 | cut -d'+' -f1 || echo "")
+          if [ -z "$PREV_VERSION" ]; then
+            # 이전 커밋이 없거나 pubspec.yaml이 없으면 빈 문자열
+            PREV_VERSION=""
+          fi
+          echo "PREV_VERSION=$PREV_VERSION" >> $GITHUB_OUTPUT
+          echo "Previous version: $PREV_VERSION"
+      
+      - name: Check if version changed
+        id: version-changed
+        run: |
+          CURRENT="${{ steps.current-version.outputs.VERSION }}"
+          PREV="${{ steps.previous-version.outputs.PREV_VERSION }}"
+          
+          if [ "$CURRENT" = "$PREV" ]; then
+            echo "CHANGED=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Version not changed ($CURRENT), skipping tag creation"
+          else
+            echo "CHANGED=true" >> $GITHUB_OUTPUT
+            echo "✅ Version changed: $PREV → $CURRENT"
+          fi
+      
+      - name: Check if tag exists
+        if: steps.version-changed.outputs.CHANGED == 'true'
+        id: tag-check
+        run: |
+          TAG="v${{ steps.current-version.outputs.VERSION }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "EXISTS=true" >> $GITHUB_OUTPUT
+            echo "Tag $TAG already exists, skipping"
+          else
+            echo "EXISTS=false" >> $GITHUB_OUTPUT
+            echo "Tag $TAG does not exist, will create"
+          fi
+      
+      - name: Create tag
+        if: steps.version-changed.outputs.CHANGED == 'true' && steps.tag-check.outputs.EXISTS == 'false'
+        run: |
+          VERSION="${{ steps.current-version.outputs.VERSION }}"
+          TAG="v$VERSION"
+          PREV_VERSION="${{ steps.previous-version.outputs.PREV_VERSION }}"
+          
+          # CHANGELOG에서 해당 버전의 내용 가져오기 (있는 경우)
+          CHANGELOG_CONTENT=""
+          if [ -f "CHANGELOG.md" ]; then
+            # CHANGELOG.md에서 [VERSION] 섹션 찾기
+            CHANGELOG_CONTENT=$(awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | head -n -1 || echo "")
+          fi
+          
+          # 태그 메시지 생성
+          TAG_MSG="Release version $VERSION"
+          if [ -n "$PREV_VERSION" ]; then
+            TAG_MSG="$TAG_MSG\n\nPrevious version: $PREV_VERSION"
+          fi
+          if [ -n "$CHANGELOG_CONTENT" ]; then
+            TAG_MSG="$TAG_MSG\n\n$CHANGELOG_CONTENT"
+          else
+            # CHANGELOG가 없으면 커밋 메시지 사용
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            TAG_MSG="$TAG_MSG\n\n$COMMIT_MSG"
+          fi
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag -a "$TAG" -m "$TAG_MSG"
+          
+          git push origin "$TAG"
+          echo "✅ Tag $TAG created and pushed"
+      
+      - name: Create GitHub Release
+        if: steps.version-changed.outputs.CHANGED == 'true' && steps.tag-check.outputs.EXISTS == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.current-version.outputs.VERSION }}
+          name: Release ${{ steps.current-version.outputs.VERSION }}
+          body: |
+            ## Release ${{ steps.current-version.outputs.VERSION }}
+            
+            ${{ steps.previous-version.outputs.PREV_VERSION != '' && format('Previous version: {0}', steps.previous-version.outputs.PREV_VERSION) || 'Initial release' }}
+            
+            ### 📝 Changes
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/master/CHANGELOG.md) for detailed changes.
+            
+            ### 📦 Download
+            - **APK**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
+            - **App Bundle**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
+            
+            ${{ steps.previous-version.outputs.PREV_VERSION != '' && format('- [Full Changelog](https://github.com/{0}/compare/v{1}...v{2})', github.repository, steps.previous-version.outputs.PREV_VERSION, steps.current-version.outputs.VERSION) || '' }}
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

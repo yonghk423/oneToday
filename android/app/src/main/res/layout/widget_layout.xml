@@ -61,9 +61,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/widget_hours_label"
                 android:textColor="#666666"
-                android:textSize="14sp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp" />
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="6dp" />
 
             <TextView
                 android:id="@+id/widget_minutes"
@@ -80,8 +83,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/widget_minutes_label"
                 android:textColor="#666666"
-                android:textSize="14sp"
-                android:layout_marginStart="4dp" />
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <!-- 자정까지 텍스트 -->

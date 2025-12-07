@@ -57,7 +57,8 @@ class Goal {
       name: json['name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       completed: json['completed'] as bool? ?? false,
-      alarmMinutes: (json['alarm_minutes'] as List<dynamic>?)
+      alarmMinutes:
+          (json['alarm_minutes'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
           [],
@@ -74,4 +75,3 @@ class Goal {
     );
   }
 }
-

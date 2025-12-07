@@ -233,6 +233,34 @@ flutter build ios --release
 
 새로운 언어 추가는 `lib/localization/app_localizations.dart` 파일에서 가능합니다.
 
+## 🌿 브랜치 전략
+
+이 프로젝트는 Git Flow를 기반으로 한 브랜치 전략을 사용합니다.
+
+- **master**: 프로덕션 배포용 (항상 안정적)
+- **develop**: 개발 통합 브랜치
+- **feature/***: 새 기능 개발
+- **bugfix/***: 버그 수정
+- **release/***: 배포 준비
+- **hotfix/***: 긴급 수정/롤백
+
+자세한 내용은 [BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)를 참고하세요.
+
+## 📦 버전 관리
+
+이 프로젝트는 Semantic Versioning (SemVer) 규칙을 따릅니다.
+
+- **현재 버전**: `1.1.0+2` (pubspec.yaml)
+- **버전 형식**: `MAJOR.MINOR.PATCH+BUILD`
+- **태그 형식**: `v1.1.0` (BUILD 번호 제외)
+
+자세한 내용은 [VERSION_MANAGEMENT.md](./VERSION_MANAGEMENT.md)를 참고하세요.
+
+### 관련 문서
+- [CHANGELOG.md](./CHANGELOG.md) - 변경 이력
+- [ROLLBACK_PLAN.md](./ROLLBACK_PLAN.md) - 롤백 계획
+- [RELEASE_HISTORY.md](./RELEASE_HISTORY.md) - 배포 이력
+
 ## 📝 향후 개선 사항
 
 - [ ] 목표 히스토리 기능

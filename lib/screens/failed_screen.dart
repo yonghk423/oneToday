@@ -44,32 +44,33 @@ class _FailedScreenState extends State<FailedScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.orange.shade300,
-                      Colors.orange.shade500,
-                    ],
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orange.withOpacity(0.3),
-                      blurRadius: 30,
-                      offset: const Offset(0, 10),
+                    padding: const EdgeInsets.all(32),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.orange.shade300,
+                          Colors.orange.shade500,
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.3),
+                          blurRadius: 30,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.timer_outlined,
-                  size: 100,
-                  color: Colors.white,
-                ),
-              ).animate()
-                .scale(duration: 600.ms, curve: Curves.elasticOut)
-                .then()
-                .shake(hz: 2, duration: 400.ms),
+                    child: const Icon(
+                      Icons.timer_outlined,
+                      size: 100,
+                      color: Colors.white,
+                    ),
+                  )
+                  .animate()
+                  .scale(duration: 600.ms, curve: Curves.elasticOut)
+                  .then()
+                  .shake(hz: 2, duration: 400.ms),
               const SizedBox(height: 40),
               Text(
                 l10n.timePassed,
@@ -78,9 +79,7 @@ class _FailedScreenState extends State<FailedScreen> {
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
-              ).animate()
-                .fadeIn(delay: 300.ms)
-                .slideY(begin: 0.3, end: 0),
+              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3, end: 0),
               const SizedBox(height: 16),
               Text(
                 l10n.goalNotCompleted,
@@ -90,18 +89,13 @@ class _FailedScreenState extends State<FailedScreen> {
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
-              ).animate()
-                .fadeIn(delay: 400.ms),
+              ).animate().fadeIn(delay: 400.ms),
               const SizedBox(height: 8),
               Text(
                 l10n.tryAgainTomorrow,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                 textAlign: TextAlign.center,
-              ).animate()
-                .fadeIn(delay: 500.ms),
+              ).animate().fadeIn(delay: 500.ms),
               const SizedBox(height: 48),
               Container(
                 decoration: BoxDecoration(
@@ -118,7 +112,9 @@ class _FailedScreenState extends State<FailedScreen> {
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
                       (route) => false,
                     );
                   },
@@ -139,9 +135,7 @@ class _FailedScreenState extends State<FailedScreen> {
                     ),
                   ),
                 ),
-              ).animate()
-                .fadeIn(delay: 600.ms)
-                .slideY(begin: 0.2, end: 0),
+              ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2, end: 0),
             ],
           ),
         ),
@@ -149,5 +143,3 @@ class _FailedScreenState extends State<FailedScreen> {
     );
   }
 }
-
-

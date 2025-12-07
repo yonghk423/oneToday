@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'One Today',
+      // 디버그 모드일 때만 디버그 배너 표시
+      // flutter run (또는 --debug)  => 배너 표시
+      // flutter run --profile / --release, flutter build apk --release => 배너 숨김
+      debugShowCheckedModeBanner: kDebugMode,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -124,7 +129,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

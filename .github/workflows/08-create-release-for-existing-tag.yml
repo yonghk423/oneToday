@@ -1,0 +1,69 @@
+name: 08 - Create Release for Existing Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: '태그 이름 (예: v1.1.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    name: Create GitHub Release for existing tag
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Verify tag exists
+        run: |
+          TAG="${{ github.event.inputs.tag_name }}"
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "❌ Tag $TAG does not exist"
+            exit 1
+          fi
+          echo "✅ Tag $TAG exists"
+      
+      - name: Get version from tag
+        id: version
+        run: |
+          TAG="${{ github.event.inputs.tag_name }}"
+          VERSION=${TAG#v}  # v 제거
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+      
+      - name: Get tag message
+        id: tag-message
+        run: |
+          TAG="${{ github.event.inputs.tag_name }}"
+          TAG_MSG=$(git tag -l --format='%(contents)' "$TAG")
+          echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
+          echo "$TAG_MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Release ${{ steps.version.outputs.VERSION }}
+            
+            ${{ steps.tag-message.outputs.MESSAGE }}
+            
+            ### 📦 Download
+            - **APK**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
+            - **App Bundle**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
+            
+            ### 📝 Changes
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/develop/CHANGELOG.md) for detailed changes.
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
