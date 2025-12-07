@@ -112,9 +112,9 @@ $COMMIT_MSG"
           tag_name: v${{ steps.current-version.outputs.VERSION }}
           name: Release ${{ steps.version.outputs.VERSION }}
           body: |
-            ## Release ${{ steps.version.outputs.VERSION }}
+            ## Release ${{ steps.current-version.outputs.VERSION }}
             
-            ${{ steps.previous-version.outputs.PREV_VERSION != '' && format('Previous version: {0}', steps.previous-version.outputs.PREV_VERSION) || '' }}
+            ${{ steps.previous-version.outputs.PREV_VERSION != '' && format('Previous version: {0}', steps.previous-version.outputs.PREV_VERSION) || 'Initial release' }}
             
             ### 📝 Changes
             See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/master/CHANGELOG.md) for detailed changes.
@@ -123,8 +123,7 @@ $COMMIT_MSG"
             - **APK**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
             - **App Bundle**: Download from [Actions artifacts](https://github.com/${{ github.repository }}/actions)
             
-            ### 🔗 Related
-            - [Full Changelog](https://github.com/${{ github.repository }}/compare/v${{ steps.previous-version.outputs.PREV_VERSION }}...v${{ steps.current-version.outputs.VERSION }})
+            ${{ steps.previous-version.outputs.PREV_VERSION != '' && format('- [Full Changelog](https://github.com/{0}/compare/v{1}...v{2})', github.repository, steps.previous-version.outputs.PREV_VERSION, steps.current-version.outputs.VERSION) || '' }}
           draft: false
           prerelease: false
           make_latest: true
