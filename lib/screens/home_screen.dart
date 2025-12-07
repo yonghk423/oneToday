@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
   int _lastUpdatedMinute = -1; // 위젯 업데이트를 위한 마지막 업데이트 분
+  bool _isLoading = true; // 로딩 상태 추가
 
   @override
   void initState() {
@@ -37,14 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadGoal() async {
     final goal = await GoalService.loadGoal();
-    setState(() {
-      _currentGoal = goal;
-      if (goal != null) {
-        _updateRemainingTime();
-      }
-    });
-    // 위젯 업데이트
-    await WidgetService.updateWidget(goal);
+    if (mounted) {
+      setState(() {
+        _currentGoal = goal;
+        _isLoading = false; // 로딩 완료
+        if (goal != null) {
+          _updateRemainingTime();
+        }
+      });
+      // 위젯 업데이트
+      await WidgetService.updateWidget(goal);
+    }
   }
 
   void _startTimer() {
@@ -93,6 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 로딩 중일 때는 로딩 인디케이터 표시
+    if (_isLoading) {
+      return _buildLoadingState();
+    }
+
     // 목표가 없거나 완료된 경우
     if (_currentGoal == null) {
       return _buildEmptyState();
@@ -105,6 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // 목표가 있는 경우
     return _buildGoalState();
+  }
+
+  Widget _buildLoadingState() {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(title: Text(l10n.appTitle)),
+      body: const Center(child: CircularProgressIndicator()),
+    );
   }
 
   Widget _buildEmptyState() {
@@ -168,6 +186,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                     if (result == true) {
+                      setState(() {
+                        _isLoading = true;
+                      });
                       _loadGoal();
                     }
                   },
@@ -420,7 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-              ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2, end: 0),
+              ),
             ],
           ),
         ),
