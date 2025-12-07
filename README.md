@@ -246,6 +246,16 @@ flutter build ios --release
 
 자세한 내용은 [BRANCH_STRATEGY.md](./BRANCH_STRATEGY.md)를 참고하세요.
 
+## 📦 버전 관리
+
+이 프로젝트는 Semantic Versioning (SemVer) 규칙을 따릅니다.
+
+- **현재 버전**: `1.1.0+2` (pubspec.yaml)
+- **버전 형식**: `MAJOR.MINOR.PATCH+BUILD`
+- **태그 형식**: `v1.1.0` (BUILD 번호 제외)
+
+자세한 내용은 [VERSION_MANAGEMENT.md](./VERSION_MANAGEMENT.md)를 참고하세요.
+
 ## 📝 향후 개선 사항
 
 - [ ] 목표 히스토리 기능

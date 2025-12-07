@@ -1,0 +1,78 @@
+name: 07 - Auto Tag and Release
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  auto-tag-release:
+    name: Auto create tag and release
+    runs-on: ubuntu-latest
+    # 버전 업데이트 커밋이 있을 때만 실행
+    if: contains(github.event.head_commit.message, 'chore: bump version') || contains(github.event.head_commit.message, 'Release') || contains(github.event.head_commit.message, 'Hotfix')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Get version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d' ' -f2 | cut -d'+' -f1)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+      
+      - name: Check if tag exists
+        id: tag-check
+        run: |
+          TAG="v${{ steps.version.outputs.VERSION }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "EXISTS=true" >> $GITHUB_OUTPUT
+            echo "Tag $TAG already exists, skipping"
+          else
+            echo "EXISTS=false" >> $GITHUB_OUTPUT
+            echo "Tag $TAG does not exist, will create"
+          fi
+      
+      - name: Create tag
+        if: steps.tag-check.outputs.EXISTS == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          TAG="v$VERSION"
+          
+          # 최근 커밋 메시지로 태그 메시지 생성
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag -a "$TAG" -m "Release version $VERSION
+          
+          $COMMIT_MSG"
+          
+          git push origin "$TAG"
+          echo "✅ Tag $TAG created and pushed"
+      
+      - name: Create GitHub Release
+        if: steps.tag-check.outputs.EXISTS == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Release ${{ steps.version.outputs.VERSION }}
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
+            
+            ### Download
+            - APK: Download from Actions artifacts
+            - App Bundle: Download from Actions artifacts
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
