@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2025-12-07
+
 ### Added
 - 버전 관리 전략 문서 (VERSION_MANAGEMENT.md)
 - CI/CD 워크플로우 구성
@@ -21,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 브랜치 전략 문서화
 - 코드 포맷팅 적용
+- 위젯으로 앱 활성화 시 불필요한 UI 리렌더링 개선
+
+### Fixed
+- YAML 파서 오류 수정
+- GitHub Actions 워크플로우 오류 수정
 
 ## [1.1.0] - 2024-01-XX
 
