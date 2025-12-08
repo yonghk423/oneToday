@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'home_screen.dart';
-import '../services/goal_service.dart';
-import '../services/widget_service.dart';
+import '../providers/goal_provider.dart';
 import '../localization/app_localizations.dart';
 
-class CompletedScreen extends StatefulWidget {
+class CompletedScreen extends ConsumerStatefulWidget {
   const CompletedScreen({super.key});
 
   @override
-  State<CompletedScreen> createState() => _CompletedScreenState();
+  ConsumerState<CompletedScreen> createState() => _CompletedScreenState();
 }
 
-class _CompletedScreenState extends State<CompletedScreen> {
+class _CompletedScreenState extends ConsumerState<CompletedScreen> {
   late ConfettiController _confettiController;
 
   @override
@@ -27,10 +27,8 @@ class _CompletedScreenState extends State<CompletedScreen> {
     // 3초 후 홈 화면으로 이동
     Future.delayed(const Duration(seconds: 3), () async {
       if (mounted) {
-        // 목표 삭제 후 홈 화면으로 이동
-        await GoalService.deleteGoal();
-        // 위젯 업데이트 (목표 없음)
-        await WidgetService.updateWidget(null);
+        // Provider를 통해 목표 삭제
+        await ref.read(goalProvider.notifier).deleteGoal();
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -132,10 +130,8 @@ class _CompletedScreenState extends State<CompletedScreen> {
                     ),
                     child: ElevatedButton(
                       onPressed: () async {
-                        // 목표 삭제 후 홈 화면으로 이동
-                        await GoalService.deleteGoal();
-                        // 위젯 업데이트 (목표 없음)
-                        await WidgetService.updateWidget(null);
+                        // Provider를 통해 목표 삭제
+                        await ref.read(goalProvider.notifier).deleteGoal();
                         if (mounted) {
                           Navigator.pushAndRemoveUntil(
                             context,
