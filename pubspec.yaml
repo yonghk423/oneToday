@@ -57,6 +57,9 @@ dependencies:
   
   # 홈 화면 위젯
   home_widget: ^0.8.1
+  
+  # 상태 관리
+  flutter_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:
