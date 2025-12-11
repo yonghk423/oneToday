@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../models/goal.dart';
-import '../services/goal_service.dart';
-import '../services/alarm_service.dart';
-import '../services/widget_service.dart';
-import '../localization/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/goal.dart';
+import '../../../../localization/app_localizations.dart';
 import '../widgets/alarm_setting_widget.dart';
+import '../../domain/providers/goal_provider.dart';
 
-class CreateGoalScreen extends StatefulWidget {
+class CreateGoalScreen extends ConsumerStatefulWidget {
   const CreateGoalScreen({super.key});
 
   @override
-  State<CreateGoalScreen> createState() => _CreateGoalScreenState();
+  ConsumerState<CreateGoalScreen> createState() => _CreateGoalScreenState();
 }
 
-class _CreateGoalScreenState extends State<CreateGoalScreen> {
+class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
   final TextEditingController _goalController = TextEditingController();
   List<int> _selectedAlarms = [];
 
@@ -42,17 +41,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       return;
     }
 
-    // 오늘 목표가 이미 있는지 확인
-    final hasGoal = await GoalService.hasTodayGoal();
-    if (hasGoal) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.goalAlreadyExists)));
-      }
-      return;
-    }
-
     final now = DateTime.now();
     final goal = Goal(
       name: _goalController.text.trim(),
@@ -61,16 +49,20 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       alarmMinutes: _selectedAlarms,
     );
 
-    // 목표 저장
-    await GoalService.saveGoal(goal);
+    // Provider를 통해 목표 저장 (이미 목표가 있는지 확인, 저장, 알람 스케줄링, 위젯 업데이트 모두 포함)
+    final success = await ref
+        .read(goalProvider.notifier)
+        .saveGoal(goal, _selectedAlarms);
 
-    // 알람 스케줄링 (실제 설정한 시간에 맞춰 알람 표시)
-    if (_selectedAlarms.isNotEmpty) {
-      await AlarmService.scheduleAlarms(goal);
+    if (!success) {
+      // 이미 목표가 있는 경우
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.goalAlreadyExists)));
+      }
+      return;
     }
-
-    // 위젯 업데이트
-    await WidgetService.updateWidget(goal);
 
     if (mounted) {
       Navigator.pop(context, true);

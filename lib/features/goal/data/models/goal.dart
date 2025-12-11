@@ -66,12 +66,12 @@ class Goal {
   }
 
   // 완료된 목표 복사
-  Goal copyWith({bool? completed}) {
+  Goal copyWith({bool? completed, List<int>? alarmMinutes}) {
     return Goal(
       name: name,
       createdAt: createdAt,
       completed: completed ?? this.completed,
-      alarmMinutes: alarmMinutes,
+      alarmMinutes: alarmMinutes ?? this.alarmMinutes,
     );
   }
 }

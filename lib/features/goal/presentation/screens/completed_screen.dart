@@ -3,8 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'home_screen.dart';
-import '../providers/goal_provider.dart';
-import '../localization/app_localizations.dart';
+import '../../domain/providers/goal_provider.dart';
+import '../../../../localization/app_localizations.dart';
 
 class CompletedScreen extends ConsumerStatefulWidget {
   const CompletedScreen({super.key});

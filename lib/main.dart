@@ -5,9 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'screens/home_screen.dart';
-import 'services/alarm_service.dart';
-import 'services/widget_service.dart';
+import 'features/goal/presentation/screens/home_screen.dart';
+import 'shared/services/alarm_service.dart';
+import 'shared/services/widget_service.dart';
 import 'localization/app_localizations.dart';
 
 // URL 스킴 처리 및 네비게이션 스택 관리

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numberpicker/numberpicker.dart';
-import '../localization/app_localizations.dart';
+import '../../../../localization/app_localizations.dart';
 
 class AlarmSettingWidget extends StatefulWidget {
   final Function(List<int>) onAlarmChanged;

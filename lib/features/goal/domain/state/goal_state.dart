@@ -1,4 +1,4 @@
-import '../models/goal.dart';
+import '../../data/models/goal.dart';
 
 /// Goal의 상태를 관리하는 클래스
 class GoalState {
