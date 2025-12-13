@@ -67,7 +67,14 @@ class OneTodayWidget : AppWidgetProvider() {
                 
                 // 자정이 지났거나 남은 시간이 0 이하면 목표 종료
                 if (remainingHours < 0 || (remainingHours == 0 && remainingMinutes <= 0)) {
-                    // 목표가 만료된 경우 (자정 이후)
+                    // 목표가 만료된 경우 (자정 이후) - SharedPreferences에서도 삭제
+                    prefs.edit()
+                        .putBoolean(KEY_HAS_GOAL, false)
+                        .remove(KEY_GOAL_NAME)
+                        .remove(KEY_REMAINING_HOURS)
+                        .remove(KEY_REMAINING_MINUTES)
+                        .apply()
+                    
                     views.setViewVisibility(R.id.widget_goal_layout, android.view.View.GONE)
                     views.setViewVisibility(R.id.widget_empty_layout, android.view.View.VISIBLE)
                 } else {

@@ -1,5 +1,5 @@
 import 'package:home_widget/home_widget.dart';
-import '../models/goal.dart';
+import '../../features/goal/data/models/goal.dart';
 
 /// 홈 화면 위젯 데이터를 관리하는 서비스
 class WidgetService {

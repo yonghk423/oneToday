@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/goal.dart';
+import '../features/goal/data/models/goal.dart';
 
 class GoalService {
   static const String _goalKey = 'today_goal';

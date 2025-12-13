@@ -52,15 +52,51 @@ struct Provider: TimelineProvider {
             entries.append(entry)
         }
         
-        // 다음 업데이트는 60분 후
-        guard let nextUpdate = calendar.date(byAdding: .minute, value: 60, to: now) else {
+        // 자정 시점 엔트리를 명시적으로 추가 (다음 60분 내에 자정이 포함된 경우)
+        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now),
+           let midnight = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: tomorrow) {
+            let minutesUntilMidnight = Int(midnight.timeIntervalSince(now) / 60)
+            
+            // 자정이 다음 60분 내에 있고, 엔트리 목록에 포함되지 않은 경우 추가
+            if minutesUntilMidnight >= 0 && minutesUntilMidnight < 60 {
+                // 이미 포함되어 있는지 확인 (분 단위로 생성하므로 대부분 포함됨)
+                let midnightEntry = createEntryForDate(midnight)
+                // 자정 시점의 엔트리가 정확히 포함되도록 보장
+                if entries.isEmpty || entries.last?.date ?? Date.distantPast < midnight {
+                    entries.append(midnightEntry)
+                }
+            }
+        }
+        
+        // 엔트리를 날짜 순으로 정렬
+        entries.sort { $0.date < $1.date }
+        
+        // 다음 업데이트는 60분 후 또는 자정 중 더 빠른 시점
+        var nextUpdate: Date?
+        if let next60Min = calendar.date(byAdding: .minute, value: 60, to: now) {
+            nextUpdate = next60Min
+        }
+        
+        // 자정이 다음 60분 내에 있으면 자정 직후에도 업데이트
+        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now),
+           let midnight = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: tomorrow),
+           midnight > now {
+            let midnightPlus1 = calendar.date(byAdding: .minute, value: 1, to: midnight) ?? midnight
+            if let currentNext = nextUpdate {
+                nextUpdate = min(currentNext, midnightPlus1)
+            } else {
+                nextUpdate = midnightPlus1
+            }
+        }
+        
+        guard let finalNextUpdate = nextUpdate else {
             let singleEntry = createEntryForDate(now)
             let timeline = Timeline(entries: [singleEntry], policy: .after(now))
             completion(timeline)
             return
         }
         
-        let timeline = Timeline(entries: entries, policy: .after(nextUpdate))
+        let timeline = Timeline(entries: entries, policy: .after(finalNextUpdate))
         completion(timeline)
     }
     
@@ -91,7 +127,14 @@ struct Provider: TimelineProvider {
         
             // 자정이 지났거나 남은 시간이 0 이하면 목표 종료
             if remainingHours < 0 || (remainingHours == 0 && remainingMinutes <= 0) {
-                // 목표가 만료된 경우 (자정 이후)
+                // 목표가 만료된 경우 (자정 이후) - UserDefaults에서도 삭제
+                defaults.set(false, forKey: "has_goal")
+                defaults.removeObject(forKey: "goal_name")
+                defaults.removeObject(forKey: "remaining_hours")
+                defaults.removeObject(forKey: "remaining_minutes")
+                defaults.set(false, forKey: "goal_completed")
+                defaults.synchronize()
+                
                 return GoalEntry(
                     date: date,
                     hasGoal: false,

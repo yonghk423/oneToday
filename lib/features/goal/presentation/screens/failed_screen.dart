@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../services/goal_service.dart';
-import '../services/alarm_service.dart';
-import '../services/widget_service.dart';
-import '../localization/app_localizations.dart';
+import '../../../../services/goal_service.dart';
+import '../../../../shared/services/alarm_service.dart';
+import '../../../../shared/services/widget_service.dart';
+import '../../../../localization/app_localizations.dart';
 import 'home_screen.dart';
 
 class FailedScreen extends StatefulWidget {

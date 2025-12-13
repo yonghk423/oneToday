@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
-import '../models/goal.dart';
+import '../../features/goal/data/models/goal.dart';
 
 class AlarmService {
   static final FlutterLocalNotificationsPlugin _notifications =

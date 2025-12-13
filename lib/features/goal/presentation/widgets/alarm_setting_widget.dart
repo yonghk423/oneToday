@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numberpicker/numberpicker.dart';
-import '../localization/app_localizations.dart';
+import '../../../../localization/app_localizations.dart';
 
 class AlarmSettingWidget extends StatefulWidget {
   final Function(List<int>) onAlarmChanged;
@@ -395,15 +395,72 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                     flex: 2,
                     child: ElevatedButton(
                       onPressed: () {
+                        // 선택된 시간이 0시간 0분인 경우
                         if (_hours == 0 && _minutes == 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.selectTime),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
+                          showDialog(
+                            context: context,
+                            builder: (dialogContext) {
+                              final dialogL10n =
+                                  AppLocalizations.of(dialogContext)!;
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                content: Text(
+                                  dialogL10n.selectTime,
+                                  textAlign: TextAlign.center,
+                                ),
+                                actionsAlignment: MainAxisAlignment.center,
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dialogContext).pop(),
+                                    child: Text(dialogL10n.confirm),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
+                        }
+
+                        // 자정 기준으로 현재 남은 시간보다 더 큰 값은 선택 불가
+                        final now = DateTime.now();
+                        final midnight = DateTime(
+                          now.year,
+                          now.month,
+                          now.day + 1,
+                          0,
+                          0,
+                        );
+                        final remainingMinutes =
+                            midnight.difference(now).inMinutes;
+                        final selectedMinutes = _hours * 60 + _minutes;
+
+                        if (selectedMinutes > remainingMinutes) {
+                          showDialog(
+                            context: context,
+                            builder: (dialogContext) {
+                              final dialogL10n =
+                                  AppLocalizations.of(dialogContext)!;
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                content: const Text(
+                                  '현재 남은 시간보다 더 크게 설정할 수 없습니다.',
+                                  textAlign: TextAlign.center,
+                                ),
+                                actionsAlignment: MainAxisAlignment.center,
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dialogContext).pop(),
+                                    child: Text(dialogL10n.confirm),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                           return;
                         }

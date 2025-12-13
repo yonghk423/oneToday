@@ -1,54 +1,44 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../models/goal.dart';
-import '../services/goal_service.dart';
-import '../services/alarm_service.dart';
-import '../services/widget_service.dart';
-import '../localization/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/goal.dart';
+import '../../../../services/goal_service.dart';
+import '../../../../shared/services/alarm_service.dart';
+import '../../../../shared/services/widget_service.dart';
+import '../../../../localization/app_localizations.dart';
+import '../../domain/providers/goal_provider.dart';
 import 'create_goal_screen.dart';
 import 'completed_screen.dart';
 import 'failed_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  Goal? _currentGoal;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
   int _lastUpdatedMinute = -1; // 위젯 업데이트를 위한 마지막 업데이트 분
-  bool _isLoading = true; // 로딩 상태 추가
 
   @override
   void initState() {
     super.initState();
-    _loadGoal();
     _startTimer();
     _initializeAlarmService();
+    // Provider를 통해 목표 로드 (ref는 build 이후에 안전하게 사용 가능)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(goalProvider.notifier).loadGoal();
+      }
+    });
   }
 
   Future<void> _initializeAlarmService() async {
     await AlarmService.initialize();
-  }
-
-  Future<void> _loadGoal() async {
-    final goal = await GoalService.loadGoal();
-    if (mounted) {
-      setState(() {
-        _currentGoal = goal;
-        _isLoading = false; // 로딩 완료
-        if (goal != null) {
-          _updateRemainingTime();
-        }
-      });
-      // 위젯 업데이트
-      await WidgetService.updateWidget(goal);
-    }
   }
 
   void _startTimer() {
@@ -62,7 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updateRemainingTime() {
-    if (_currentGoal == null) return;
+    // Provider에서 목표 가져오기
+    final goalState = ref.read(goalProvider);
+    final currentGoal = goalState.goal;
+    if (currentGoal == null) return;
 
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day + 1, 0, 0);
@@ -72,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentMinute = now.minute;
     if (currentMinute != _lastUpdatedMinute) {
       _lastUpdatedMinute = currentMinute;
-      WidgetService.updateWidget(_currentGoal);
+      WidgetService.updateWidget(currentGoal);
     }
 
     // 시간이 만료되었으면 실패 화면으로
@@ -97,23 +90,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 로딩 중일 때는 로딩 인디케이터 표시
-    if (_isLoading) {
+    // GoalProvider 읽기
+    final goalState = ref.watch(goalProvider);
+
+    // 로딩 중일 때는 로딩 인디케이터 표시 (Provider 값 사용)
+    if (goalState.isLoading) {
       return _buildLoadingState();
     }
 
+    // 목표 가져오기 (Provider 값 사용)
+    final currentGoal = goalState.goal;
+
     // 목표가 없거나 완료된 경우
-    if (_currentGoal == null) {
+    if (currentGoal == null) {
       return _buildEmptyState();
     }
 
     // 목표가 완료된 경우
-    if (_currentGoal!.completed) {
+    if (currentGoal.completed) {
       return _buildCompletedState();
     }
 
     // 목표가 있는 경우
-    return _buildGoalState();
+    return _buildGoalState(currentGoal);
   }
 
   Widget _buildLoadingState() {
@@ -186,10 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                     if (result == true) {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      _loadGoal();
+                      // Provider를 통해 목표 다시 로드
+                      ref.read(goalProvider.notifier).loadGoal();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -221,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGoalState() {
+  Widget _buildGoalState(Goal currentGoal) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -280,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      _currentGoal!.name,
+                      currentGoal.name,
                       style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -463,8 +460,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _completeGoal() async {
     await GoalService.completeGoal();
     await AlarmService.cancelAllAlarms();
-    // 완료된 목표로 위젯 업데이트
-    final completedGoal = _currentGoal?.copyWith(completed: true);
+    // 완료된 목표로 위젯 업데이트 (Provider에서 가져오기)
+    final goalState = ref.read(goalProvider);
+    final completedGoal = goalState.goal?.copyWith(completed: true);
     await WidgetService.updateWidget(completedGoal);
     if (mounted) {
       Navigator.pushReplacement(
