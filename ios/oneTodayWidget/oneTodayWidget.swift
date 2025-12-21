@@ -193,7 +193,7 @@ struct oneTodayWidgetEntryView : View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("오늘의 목표")
                     .font(.caption)
-                    .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                    .foregroundColor(Color(red: 0.043, green: 0.502, blue: 0.502))
                 
                 Text(entry.goalName)
                     .font(.headline)
@@ -206,7 +206,7 @@ struct oneTodayWidgetEntryView : View {
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
                         Text("\(entry.remainingHours)")
                             .font(.system(size: 26, weight: .bold))
-                            .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                            .foregroundColor(Color(red: 0.043, green: 0.502, blue: 0.502))
                             .minimumScaleFactor(0.8)
                             .lineLimit(1)
                         
@@ -219,7 +219,7 @@ struct oneTodayWidgetEntryView : View {
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
                         Text("\(entry.remainingMinutes)")
                             .font(.system(size: 26, weight: .bold))
-                            .foregroundColor(Color(red: 0.388, green: 0.4, blue: 0.945))
+                            .foregroundColor(Color(red: 0.043, green: 0.502, blue: 0.502))
                             .minimumScaleFactor(0.8)
                             .lineLimit(1)
                         

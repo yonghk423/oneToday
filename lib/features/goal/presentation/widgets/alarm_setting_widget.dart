@@ -129,13 +129,13 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6366F1).withOpacity(0.1),
-                    const Color(0xFF8B5CF6).withOpacity(0.1),
+                    const Color(0xFF0B8080).withOpacity(0.1),
+                    const Color(0xFF0A6B6B).withOpacity(0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: const Color(0xFF6366F1).withOpacity(0.3),
+                  color: const Color(0xFF0B8080).withOpacity(0.3),
                 ),
               ),
               child: ListTile(
@@ -146,12 +146,12 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.2),
+                    color: const Color(0xFF0B8080).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.notifications_active,
-                    color: Color(0xFF6366F1),
+                    color: Color(0xFF0B8080),
                     size: 24,
                   ),
                 ),
@@ -184,7 +184,7 @@ class _AlarmSettingWidgetState extends State<AlarmSettingWidget> {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: BorderSide(
-                color: const Color(0xFF6366F1).withOpacity(0.5),
+                color: const Color(0xFF0B8080).withOpacity(0.5),
                 width: 1.5,
               ),
               shape: RoundedRectangleBorder(
@@ -270,7 +270,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF6366F1).withOpacity(0.1),
+                            color: const Color(0xFF0B8080).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: NumberPicker(
@@ -287,13 +287,13 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                             selectedTextStyle: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF6366F1),
+                              color: Color(0xFF0B8080),
                             ),
                             decoration: BoxDecoration(
                               border: Border.symmetric(
                                 horizontal: BorderSide(
                                   color: const Color(
-                                    0xFF6366F1,
+                                    0xFF0B8080,
                                   ).withOpacity(0.3),
                                   width: 2,
                                 ),
@@ -332,7 +332,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8B5CF6).withOpacity(0.1),
+                            color: const Color(0xFF0A6B6B).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: NumberPicker(
@@ -349,13 +349,13 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                             selectedTextStyle: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF8B5CF6),
+                              color: Color(0xFF0A6B6B),
                             ),
                             decoration: BoxDecoration(
                               border: Border.symmetric(
                                 horizontal: BorderSide(
                                   color: const Color(
-                                    0xFF8B5CF6,
+                                    0xFF0A6B6B,
                                   ).withOpacity(0.3),
                                   width: 2,
                                 ),
@@ -400,8 +400,9 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                           showDialog(
                             context: context,
                             builder: (dialogContext) {
-                              final dialogL10n =
-                                  AppLocalizations.of(dialogContext)!;
+                              final dialogL10n = AppLocalizations.of(
+                                dialogContext,
+                              )!;
                               return AlertDialog(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -433,22 +434,24 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                           0,
                           0,
                         );
-                        final remainingMinutes =
-                            midnight.difference(now).inMinutes;
+                        final remainingMinutes = midnight
+                            .difference(now)
+                            .inMinutes;
                         final selectedMinutes = _hours * 60 + _minutes;
 
                         if (selectedMinutes > remainingMinutes) {
                           showDialog(
                             context: context,
                             builder: (dialogContext) {
-                              final dialogL10n =
-                                  AppLocalizations.of(dialogContext)!;
+                              final dialogL10n = AppLocalizations.of(
+                                dialogContext,
+                              )!;
                               return AlertDialog(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                content: const Text(
-                                  '현재 남은 시간보다 더 크게 설정할 수 없습니다.',
+                                content: Text(
+                                  dialogL10n.timeExceedsRemaining,
                                   textAlign: TextAlign.center,
                                 ),
                                 actionsAlignment: MainAxisAlignment.center,
@@ -468,7 +471,7 @@ class _AlarmTimePickerSheetState extends State<_AlarmTimePickerSheet> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6366F1),
+                        backgroundColor: const Color(0xFF0B8080),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),

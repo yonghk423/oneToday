@@ -6,4 +6,3 @@ import '../state/goal_state.dart';
 final goalProvider = StateNotifierProvider<GoalNotifier, GoalState>((ref) {
   return GoalNotifier();
 });
-

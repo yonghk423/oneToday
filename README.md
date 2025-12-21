@@ -201,8 +201,8 @@ flutter build ios --release
 ## 🎨 디자인 시스템
 
 ### 색상
-- **Primary**: `#6366F1` (Indigo)
-- **Secondary**: `#8B5CF6` (Purple)
+- **Primary**: `#0B8080` (Teal/Turquoise)
+- **Secondary**: `#0A6B6B` (Dark Teal)
 - **Success**: `Colors.green.shade400`
 - **Warning**: `Colors.orange.shade300`
 
