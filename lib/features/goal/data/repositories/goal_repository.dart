@@ -29,4 +29,3 @@ class GoalRepository {
     await GoalService.completeGoal();
   }
 }
-
