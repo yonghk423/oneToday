@@ -4,10 +4,39 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'screens/home_screen.dart';
-import 'services/alarm_service.dart';
-import 'services/widget_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'features/goal/presentation/screens/home_screen.dart';
+import 'shared/services/alarm_service.dart';
+import 'shared/services/widget_service.dart';
 import 'localization/app_localizations.dart';
+
+// URL 스킴 처리 및 네비게이션 스택 관리
+class UrlSchemeHandler {
+  static const MethodChannel _channel = MethodChannel(
+    'com.smileDragon.onetoday/url_scheme',
+  );
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static void initialize() {
+    _channel.setMethodCallHandler((call) async {
+      if (call.method == 'onUrlScheme') {
+        final url = call.arguments as String?;
+        if (url != null && url.startsWith('onetoday://')) {
+          _handleUrlScheme(url);
+        }
+      }
+    });
+  }
+
+  static void _handleUrlScheme(String url) {
+    final navigator = navigatorKey.currentState;
+    if (navigator != null) {
+      // 네비게이션 스택 초기화: 모든 라우트를 제거하고 HomeScreen만 남김
+      navigator.popUntil((route) => route.isFirst);
+    }
+  }
+}
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +56,10 @@ void main() async {
   // 위젯 서비스 초기화
   await WidgetService.initialize();
 
-  runApp(const MyApp());
+  // URL 스킴 핸들러 초기화
+  UrlSchemeHandler.initialize();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -45,6 +77,7 @@ class MyApp extends StatelessWidget {
     ]);
 
     return MaterialApp(
+      navigatorKey: UrlSchemeHandler.navigatorKey,
       title: 'One Today',
       // 디버그 모드일 때만 디버그 배너 표시
       // flutter run (또는 --debug)  => 배너 표시
@@ -76,7 +109,7 @@ class MyApp extends StatelessWidget {
       // 시스템 언어를 자동으로 감지 (한국어면 한국어, 영어면 영어로 표시)
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6366F1),
+          seedColor: const Color(0xFF0B8080),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
@@ -118,7 +151,7 @@ class MyApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+            borderSide: const BorderSide(color: Color(0xFF0B8080), width: 2),
           ),
           filled: true,
           fillColor: Colors.grey.shade50,
@@ -129,6 +162,30 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const HomeScreen(),
+      // 중복 라우트 방지를 위한 observer 추가
+      navigatorObservers: [_RouteObserver()],
     );
+  }
+}
+
+// 중복 라우트 방지를 위한 RouteObserver
+class _RouteObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+
+    // 같은 라우트(HomeScreen)가 중복으로 푸시되는 경우 방지
+    if (previousRoute != null &&
+        route.settings.name == previousRoute.settings.name &&
+        route.settings.name == '/') {
+      // 위젯에서 실행된 경우: 이전 라우트를 제거하여 중복 방지
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final navigator = UrlSchemeHandler.navigatorKey.currentState;
+        if (navigator != null && navigator.canPop()) {
+          // 첫 번째 라우트까지 모든 라우트를 제거하고 현재 라우트만 남김
+          navigator.popUntil((r) => r == route || r.isFirst);
+        }
+      });
+    }
   }
 }
