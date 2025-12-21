@@ -109,7 +109,7 @@ class MyApp extends StatelessWidget {
       // 시스템 언어를 자동으로 감지 (한국어면 한국어, 영어면 영어로 표시)
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6366F1),
+          seedColor: const Color(0xFF0B8080),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
@@ -151,7 +151,7 @@ class MyApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+            borderSide: const BorderSide(color: Color(0xFF0B8080), width: 2),
           ),
           filled: true,
           fillColor: Colors.grey.shade50,

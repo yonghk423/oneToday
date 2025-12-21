@@ -23,6 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
   int _lastUpdatedMinute = -1; // 위젯 업데이트를 위한 마지막 업데이트 분
+  static const Color _teal = Color(0xFF0B8080);
 
   @override
   void initState() {
@@ -126,54 +127,90 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEmptyState() {
     final l10n = AppLocalizations.of(context)!;
+    final dateText = _formatHeaderDate(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(title: Text(l10n.appTitle)),
-      body: Center(
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF6366F1).withOpacity(0.1),
-                          const Color(0xFF8B5CF6).withOpacity(0.1),
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.flag_rounded,
-                      size: 80,
-                      color: const Color(0xFF6366F1),
-                    ),
-                  )
-                  .animate()
-                  .fadeIn(duration: 600.ms)
-                  .scale(delay: 200.ms, duration: 400.ms),
               const SizedBox(height: 32),
+
+              // Date header
               Text(
-                l10n.noGoal,
+                dateText,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 52,
+                  height: 1.05,
+                  fontWeight: FontWeight.w500,
+                  color: _teal,
+                  letterSpacing: -1.2,
                 ),
-              ).animate().fadeIn(delay: 300.ms),
+              ).animate().fadeIn(duration: 350.ms).slideY(begin: -0.08, end: 0),
               const SizedBox(height: 12),
               Text(
-                l10n.noGoalDescription,
+                l10n.readyForToday,
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                  height: 1.5,
+                  fontSize: 18,
+                  height: 1.2,
+                  color: Colors.grey.shade400,
+                  fontWeight: FontWeight.w500,
                 ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(delay: 400.ms),
-              const SizedBox(height: 48),
+              ).animate().fadeIn(delay: 150.ms, duration: 300.ms),
+
+              const SizedBox(height: 16),
+
+              // Big clock graphic
+              Flexible(
+                fit: FlexFit.loose,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ClockFocusGraphic()
+                        .animate()
+                        .fadeIn(delay: 120.ms, duration: 450.ms)
+                        .scale(
+                          begin: const Offset(0.98, 0.98),
+                          end: const Offset(1, 1),
+                        ),
+                    const SizedBox(height: 10),
+                    Text(
+                      l10n.noGoalSetToday,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        height: 1.15,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.4,
+                      ),
+                    ).animate().fadeIn(delay: 200.ms, duration: 350.ms),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.clearMindDescription,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.4,
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ).animate().fadeIn(delay: 260.ms, duration: 350.ms),
+                  ],
+                ),
+              ),
+
+              // Tooltip + button
+              const SizedBox(height: 8),
+              _StartHereTooltip(text: l10n.startHere)
+                  .animate()
+                  .fadeIn(delay: 350.ms, duration: 300.ms)
+                  .slideY(begin: 0.15, end: 0),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -185,254 +222,371 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     );
                     if (result == true) {
-                      // Provider를 통해 목표 다시 로드
                       ref.read(goalProvider.notifier).loadGoal();
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
+                    backgroundColor: _teal,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
                     elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: const StadiumBorder(),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.add_circle_outline, size: 24),
-                      const SizedBox(width: 8),
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.add, color: _teal, size: 22),
+                      ),
+                      const SizedBox(width: 14),
                       Text(
-                        l10n.addGoal,
+                        l10n.defineYourFocus,
                         style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2, end: 0),
+              ).animate().fadeIn(delay: 420.ms, duration: 320.ms),
+              const SizedBox(height: 8),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomBarEmptyState(l10n),
+    );
+  }
+
+  Widget _buildBottomBarEmptyState(AppLocalizations l10n) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 74,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _BottomNavItem(
+              icon: Icons.home_rounded,
+              label: l10n.home,
+              isActive: true,
+              activeColor: _teal,
+            ),
+          ],
         ),
       ),
     );
   }
 
+  String _formatHeaderDate(BuildContext context) {
+    final now = DateTime.now();
+    final locale = Localizations.localeOf(context).languageCode;
+
+    // 이미지와 동일한 스타일 우선 (en: Monday,\nOct 24)
+    const weekdaysEn = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    const monthsEn = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    if (locale == 'ko') {
+      // 한국어는 자연스러운 포맷으로 표시
+      const weekdaysKo = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+      final weekday = weekdaysKo[now.weekday - 1];
+      return '${now.month}월 ${now.day}일\n$weekday';
+    }
+
+    final weekday = weekdaysEn[now.weekday - 1];
+    final month = monthsEn[now.month - 1];
+    return '$weekday,\n$month ${now.day}';
+  }
+
+  String _formatGoalHeaderDate(BuildContext context) {
+    final now = DateTime.now();
+    final locale = Localizations.localeOf(context).languageCode;
+
+    if (locale == 'ko') {
+      // 한국어는 자연스러운 한 줄 포맷
+      const weekdaysKo = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+      const monthsKo = [
+        '1월',
+        '2월',
+        '3월',
+        '4월',
+        '5월',
+        '6월',
+        '7월',
+        '8월',
+        '9월',
+        '10월',
+        '11월',
+        '12월',
+      ];
+      final weekday = weekdaysKo[now.weekday - 1];
+      final month = monthsKo[now.month - 1];
+      return '$month ${now.day}일 $weekday';
+    }
+
+    // 이미지와 동일한 영어 스타일: Tuesday, October 24
+    const weekdaysEn = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    const monthsEn = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    final weekday = weekdaysEn[now.weekday - 1];
+    final month = monthsEn[now.month - 1];
+    return '$weekday, $month ${now.day}';
+  }
+
+  String _formatHms(Duration d) {
+    final total = d.inSeconds;
+    if (total <= 0) return '00:00:00';
+    final h = (total ~/ 3600).toString().padLeft(2, '0');
+    final m = ((total % 3600) ~/ 60).toString().padLeft(2, '0');
+    final s = (total % 60).toString().padLeft(2, '0');
+    return '$h:$m:$s';
+  }
+
   Widget _buildGoalState(Goal currentGoal) {
     final l10n = AppLocalizations.of(context)!;
+    final headerDate = _formatGoalHeaderDate(context);
+    final timeText = _formatHms(_remainingTime);
+
+    // 원형 링 진행률 (자정까지 남은 시간을 24시간 기준으로 표시)
+    final totalSeconds = const Duration(hours: 24).inSeconds.toDouble();
+    final remainingSeconds = _remainingTime.inSeconds
+        .clamp(0, totalSeconds.toInt())
+        .toDouble();
+    final progress = (1 - (remainingSeconds / totalSeconds)).clamp(0.0, 1.0);
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(title: Text(l10n.appTitle)),
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 목표 카드
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              // 상단 헤더: 날짜
+              Center(
+                child: Text(
+                  headerDate,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: -0.2,
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF6366F1).withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.flag,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          l10n.todayGoal,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      currentGoal.name,
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.3,
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.2, end: 0),
-              const SizedBox(height: 40),
+              ),
+              const SizedBox(height: 18),
 
-              // 남은 시간 표시 - 카드 형식
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.grey.shade200, width: 1),
-                ),
+              // IN PROGRESS 배지
+              Center(
                 child: Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.white, Colors.grey.shade50],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
                   ),
-                  child: Column(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF6F5),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      const Icon(Icons.timer_outlined, size: 18, color: _teal),
+                      const SizedBox(width: 10),
                       Text(
-                        l10n.remainingTime,
-                        style: TextStyle(
+                        l10n.inProgress,
+                        style: const TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              '${_remainingTime.inHours}',
-                              style: const TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF6366F1),
-                                height: 1.0,
-                                letterSpacing: -2,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: Text(
-                                l10n.hours,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey.shade600,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${_remainingTime.inMinutes % 60}',
-                              style: const TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF6366F1),
-                                height: 1.0,
-                                letterSpacing: -2,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: Text(
-                                l10n.minutes,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey.shade600,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6366F1).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          l10n.untilMidnight,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF6366F1),
-                            fontWeight: FontWeight.w500,
-                          ),
+                          fontWeight: FontWeight.w800,
+                          color: _teal,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: -0.1, end: 0),
+              ),
+              const SizedBox(height: 18),
 
-              const SizedBox(height: 40),
-
-              // 완료 버튼
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.green.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
+              // TODAY'S FOCUS
+              Center(
+                child: Text(
+                  l10n.todaysFocus,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF94A3B8),
+                    letterSpacing: 1.2,
+                  ),
                 ),
+              ),
+              const SizedBox(height: 10),
+
+              // 목표 타이틀
+              Center(
+                child: Text(
+                  currentGoal.name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 36,
+                    height: 1.08,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: -1.0,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(height: 26),
+
+              // 원형 타이머
+              Expanded(
+                child: Center(
+                  child: SizedBox(
+                    width: 320,
+                    height: 320,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          width: 320,
+                          height: 320,
+                          child: CircularProgressIndicator(
+                            value: progress,
+                            strokeWidth: 12,
+                            backgroundColor: const Color(0xFFE5E7EB),
+                            color: _teal,
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              timeText,
+                              style: const TextStyle(
+                                fontSize: 54,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF0F172A),
+                                letterSpacing: -1.0,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              l10n.timeRemaining,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF94A3B8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // 문구(이미지와 동일한 형태)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  l10n.goalQuote,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.5,
+                    color: Color(0xFF94A3B8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              // 완료 버튼 (Mark as Complete)
+              SizedBox(
+                height: 64,
                 child: ElevatedButton(
                   onPressed: _completeGoal,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade400,
+                    backgroundColor: _teal,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
                     elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.check_circle, size: 28),
-                      const SizedBox(width: 12),
+                      const Icon(Icons.check_circle, size: 22),
+                      const SizedBox(width: 10),
                       Text(
-                        l10n.completeGoal,
+                        l10n.markAsComplete,
                         style: const TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ],
@@ -470,5 +624,150 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         MaterialPageRoute(builder: (context) => const CompletedScreen()),
       );
     }
+  }
+}
+
+class _ClockFocusGraphic extends StatelessWidget {
+  static const Color _teal = Color(0xFF0B8080);
+
+  const _ClockFocusGraphic();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 180,
+          height: 180,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFFEAF6F5),
+            boxShadow: [
+              BoxShadow(
+                color: _teal.withOpacity(0.10),
+                blurRadius: 24,
+                spreadRadius: 3,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 156,
+          height: 156,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(color: _teal.withOpacity(0.06), width: 2),
+          ),
+        ),
+        Container(
+          width: 58,
+          height: 58,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFF9CC9C6),
+          ),
+          child: const Icon(
+            Icons.access_time_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartHereTooltip extends StatelessWidget {
+  final String text;
+
+  const _StartHereTooltip({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    const bg = Color(0xFF3A3A3A);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        CustomPaint(
+          size: const Size(18, 10),
+          painter: _TrianglePainter(color: bg),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrianglePainter extends CustomPainter {
+  final Color color;
+
+  const _TrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    final path = Path()
+      ..moveTo(size.width / 2, size.height)
+      ..lineTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrianglePainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
+class _BottomNavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final Color activeColor;
+
+  const _BottomNavItem({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.activeColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isActive ? activeColor : Colors.grey.shade400;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 30),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
   }
 }

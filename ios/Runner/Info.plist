@@ -47,18 +47,18 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>onetoday</string>
-			</array>
-			<key>CFBundleURLName</key>
-			<string>com.smileDragon.onetoday</string>
-		</dict>
-	</array>
-</dict>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false/>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>onetoday</string>
+				</array>
+				<key>CFBundleURLName</key>
+				<string>com.smileDragon.onetoday</string>
+			</dict>
+		</array>
+	</dict>
 </plist>
